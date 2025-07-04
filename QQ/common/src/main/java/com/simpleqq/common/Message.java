@@ -1,3 +1,4 @@
+
 package com.simpleqq.common;
 
 import java.io.Serializable;
@@ -60,11 +61,12 @@ public class Message implements Serializable {
     @Override
     public String toString() {
         return "Message{" +
-               "type=" + type +
-               ", senderId='" + senderId + '\'' +
-               ", receiverId='" + receiverId + '\'' +
-               ", timestamp=" + timestamp +
-               ", content='" + content + '\'' +
-               '}';
+                "type=" + type +
+                ", senderId='" + senderId + '\'' +
+                ", receiverId='" + receiverId + '\'' +
+                ", timestamp=" + timestamp +
+                ", content='" + content + '\'' +
+                '}';
     }
 }
+
