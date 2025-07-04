@@ -1,9 +1,5 @@
 package com.simpleqq.client;
 
-import com.simpleqq.common.Message;
-import com.simpleqq.common.MessageType;
-import com.simpleqq.common.User;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,6 +7,9 @@ import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
+
+import com.simpleqq.common.Message;
+import com.simpleqq.common.User;
 
 public class Client {
     private static final String SERVER_IP = "127.0.0.1"; // 服务器IP地址

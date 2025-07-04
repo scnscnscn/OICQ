@@ -1,13 +1,21 @@
 
 package com.simpleqq.client;
 
+import java.awt.GridLayout;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
 import com.simpleqq.common.Message;
 import com.simpleqq.common.MessageType;
 import com.simpleqq.common.User;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
 
 public class LoginWindow extends JFrame {
     private JTextField idField;

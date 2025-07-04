@@ -1,10 +1,8 @@
 package com.simpleqq.client;
 
-import com.simpleqq.common.Message;
-import com.simpleqq.common.MessageType;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -16,6 +14,22 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+
+import com.simpleqq.common.Message;
+import com.simpleqq.common.MessageType;
 
 public class GroupChatWindow extends JFrame {
     private Client client;
@@ -148,7 +162,7 @@ public class GroupChatWindow extends JFrame {
                 // 如果包含图片数据，只显示文件名
                 String fileName = content.split(":", 2)[0];
                 displayContent = "[图片: " + fileName + "]";
-
+                
                 // 如果是接收到的图片消息，保存图片
                 if (!message.getSenderId().equals(client.getCurrentUser().getId())) {
                     try {
@@ -156,15 +170,15 @@ public class GroupChatWindow extends JFrame {
                         if (parts.length == 2) {
                             String base64Image = parts[1];
                             byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-
+                            
                             // 创建保存目录
                             File saveDir = new File("received_images");
                             saveDir.mkdirs();
-
+                            
                             // 保存图片
                             File outputFile = new File(saveDir, fileName);
                             Files.write(outputFile.toPath(), imageBytes);
-
+                            
                             displayContent += " (已保存到: " + outputFile.getAbsolutePath() + ")";
                         }
                     } catch (Exception ex) {

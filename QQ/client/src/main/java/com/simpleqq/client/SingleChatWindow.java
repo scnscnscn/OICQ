@@ -1,10 +1,7 @@
 package com.simpleqq.client;
 
-import com.simpleqq.common.Message;
-import com.simpleqq.common.MessageType;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -16,6 +13,18 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import com.simpleqq.common.Message;
+import com.simpleqq.common.MessageType;
+
 public class SingleChatWindow extends JFrame {
     private Client client;
     private String friendId;
@@ -25,7 +34,6 @@ public class SingleChatWindow extends JFrame {
     private JButton sendImageButton;
     private JButton saveHistoryButton; // New: Save chat history button
     private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-    private File selectedImageFile; // New: To store the selected image file
 
     public SingleChatWindow(Client client, String friendId) {
         this.client = client;
@@ -90,12 +98,18 @@ public class SingleChatWindow extends JFrame {
         fileChooser.setDialogTitle("选择图片");
         int result = fileChooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION) {
-            selectedImageFile = fileChooser.getSelectedFile();
-            String fileName = selectedImageFile.getName();
-            // Send IMAGE_REQUEST to the server
-            Message imageRequest = new Message(MessageType.IMAGE_REQUEST, client.getCurrentUser().getId(), friendId, fileName);
-            client.sendMessage(imageRequest);
-            JOptionPane.showMessageDialog(this, "图片发送请求已发出，等待对方确认接收...");
+            File selectedFile = fileChooser.getSelectedFile();
+            try {
+                byte[] imageBytes = Files.readAllBytes(selectedFile.toPath());
+                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                // 私聊中直接发送图片数据，类似群聊
+                Message message = new Message(MessageType.IMAGE_MESSAGE, client.getCurrentUser().getId(), friendId, selectedFile.getName() + ":" + base64Image);
+                client.sendMessage(message);
+                // 立即显示自己发送的图片消息
+                displayMessage(new Message(MessageType.IMAGE_MESSAGE, client.getCurrentUser().getId(), friendId, selectedFile.getName()));
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "发送图片失败: " + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 
@@ -105,8 +119,39 @@ public class SingleChatWindow extends JFrame {
         String displayContent;
 
         if (message.getType() == MessageType.IMAGE_MESSAGE) {
-            // Display [图片: filename] in chat area
-            displayContent = "[图片: " + message.getContent() + "]";
+            // 处理私聊图片消息
+            String content = message.getContent();
+            if (content.contains(":")) {
+                // 如果包含图片数据，只显示文件名
+                String fileName = content.split(":", 2)[0];
+                displayContent = "[图片: " + fileName + "]";
+                
+                // 如果是接收到的图片消息，保存图片到以发送者用户名命名的文件夹
+                if (!message.getSenderId().equals(client.getCurrentUser().getId())) {
+                    try {
+                        String[] parts = content.split(":", 2);
+                        if (parts.length == 2) {
+                            String base64Image = parts[1];
+                            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+                            
+                            // 创建以发送者用户名命名的保存目录
+                            File saveDir = new File("received_images_from_" + message.getSenderId());
+                            saveDir.mkdirs();
+                            
+                            // 保存图片
+                            File outputFile = new File(saveDir, fileName);
+                            Files.write(outputFile.toPath(), imageBytes);
+                            
+                            displayContent += " (已保存到: " + outputFile.getAbsolutePath() + ")";
+                        }
+                    } catch (Exception ex) {
+                        displayContent += " (保存失败: " + ex.getMessage() + ")";
+                    }
+                }
+            } else {
+                // 只有文件名
+                displayContent = "[图片: " + content + "]";
+            }
         } else {
             displayContent = message.getContent();
         }
@@ -176,43 +221,13 @@ public class SingleChatWindow extends JFrame {
                 }
                 break;
             case IMAGE_ACCEPT:
-                // Receiver accepted, send the actual image data
-                try {
-                    byte[] imageBytes = Files.readAllBytes(selectedImageFile.toPath());
-                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                    // Content of IMAGE_ACCEPT message is the chosen save path by receiver
-                    String savePathAndFileName = message.getContent(); // This now contains full path + filename
-                    Message imageData = new Message(MessageType.IMAGE_DATA, client.getCurrentUser().getId(), friendId, savePathAndFileName + ":" + base64Image);
-                    client.sendMessage(imageData);
-                    displayMessage(new Message(MessageType.IMAGE_MESSAGE, client.getCurrentUser().getId(), friendId, selectedImageFile.getName())); // Display [图片] for sender
-                    JOptionPane.showMessageDialog(this, "图片已发送并被对方接受。");
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(this, "读取图片失败: " + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
-                }
+                // 这些方法现在不再使用，因为我们采用了类似群聊的直接发送方式
                 break;
             case IMAGE_REJECT:
-                JOptionPane.showMessageDialog(this, "对方拒绝接收您的图片: " + message.getContent());
+                // 这些方法现在不再使用，因为我们采用了类似群聊的直接发送方式
                 break;
             case IMAGE_DATA:
-                // Receiver receives the actual image data
-                String[] parts = message.getContent().split(":", 2); // Split into 2 parts: path+filename and base64
-                if (parts.length == 2) {
-                    String savePathAndFileName = parts[0];
-                    String base64Image = parts[1];
-                    try {
-                        byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-                        File outputFile = new File(savePathAndFileName);
-                        // 确保父目录存在
-                        if (outputFile.getParentFile() != null) {
-                            outputFile.getParentFile().mkdirs();
-                        }
-                        Files.write(outputFile.toPath(), imageBytes);
-                        displayMessage(new Message(MessageType.IMAGE_MESSAGE, message.getSenderId(), message.getReceiverId(), outputFile.getName())); // Display [图片] for receiver
-                        JOptionPane.showMessageDialog(this, "已接收图片并保存到: " + outputFile.getAbsolutePath());
-                    } catch (IOException ex) {
-                        JOptionPane.showMessageDialog(this, "保存图片失败: " + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
+                // 这些方法现在不再使用，因为我们采用了类似群聊的直接发送方式
                 break;
         }
     }
