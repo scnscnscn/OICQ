@@ -1,12 +1,17 @@
 package com.simpleqq.server;
 
-import com.simpleqq.common.User;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.simpleqq.common.User;
 
 /**
  * 用户管理器类
@@ -18,9 +23,9 @@ public class UserManager {
     private static final String FRIENDSHIPS_FILE = "friendships.txt";        // 好友关系文件
     private static final String FRIEND_REQUESTS_FILE = "friend_requests.txt"; // 好友请求文件
 
-    private Map<String, User> users;                           // 用户信息映射表，key为用户ID
-    private Map<String, List<String>> friendships;            // 好友关系映射表，key为用户ID，value为好友ID列表
-    private Map<String, List<String>> pendingFriendRequests;  // 待处理好友请求，key为接收者ID，value为发送者ID列表
+    private final Map<String, User> users;                           // 用户信息映射表，key为用户ID
+    private final Map<String, List<String>> friendships;            // 好友关系映射表，key为用户ID，value为好友ID列表
+    private final Map<String, List<String>> pendingFriendRequests;  // 待处理好友请求，key为接收者ID，value为发送者ID列表
 
     /**
      * 构造函数
@@ -41,6 +46,7 @@ public class UserManager {
      * 从文件加载用户信息
      * 文件格式：用户ID|用户名|密码
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     private void loadUsers() {
         try (BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE))) {
             String line;
@@ -63,6 +69,7 @@ public class UserManager {
      * 保存用户信息到文件
      * 将内存中的用户数据写入文件进行持久化
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     private void saveUsers() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(USERS_FILE))) {
             for (User user : users.values()) {
@@ -79,6 +86,7 @@ public class UserManager {
      * 从文件加载好友关系
      * 文件格式：用户ID1|用户ID2（表示双向好友关系）
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     private void loadFriendships() {
         try (BufferedReader reader = new BufferedReader(new FileReader(FRIENDSHIPS_FILE))) {
             String line;
@@ -105,6 +113,7 @@ public class UserManager {
      * 保存好友关系到文件
      * 避免重复保存双向关系，只保存字典序较小的用户ID在前的关系
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     private void saveFriendships() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FRIENDSHIPS_FILE))) {
             for (Map.Entry<String, List<String>> entry : friendships.entrySet()) {
@@ -128,6 +137,7 @@ public class UserManager {
      * 从文件加载好友请求
      * 文件格式：发送者ID|接收者ID
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     private void loadFriendRequests() {
         try (BufferedReader reader = new BufferedReader(new FileReader(FRIEND_REQUESTS_FILE))) {
             String line;
@@ -149,6 +159,7 @@ public class UserManager {
     /**
      * 保存好友请求到文件
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     private void saveFriendRequests() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FRIEND_REQUESTS_FILE))) {
             for (Map.Entry<String, List<String>> entry : pendingFriendRequests.entrySet()) {

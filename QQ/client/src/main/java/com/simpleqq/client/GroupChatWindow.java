@@ -1,10 +1,8 @@
 package com.simpleqq.client;
 
-import com.simpleqq.common.Message;
-import com.simpleqq.common.MessageType;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -17,14 +15,30 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+
+import com.simpleqq.common.Message;
+import com.simpleqq.common.MessageType;
+
 /**
  * 群聊窗口类
  * 提供群组聊天功能，支持多人文本和图片消息交流
  * 包含群成员管理、邀请功能等
  */
 public class GroupChatWindow extends JFrame {
-    private Client client;                           // 客户端连接对象
-    private String groupId;                          // 群组ID
+    private final Client client;                           // 客户端连接对象
+    private final String groupId;                          // 群组ID
     private JTextArea chatArea;                      // 聊天内容显示区域
     private JTextField messageField;                 // 消息输入框
     private JButton sendButton;                      // 发送文本消息按钮
@@ -33,7 +47,7 @@ public class GroupChatWindow extends JFrame {
     private JButton refreshMembersButton;            // 刷新成员列表按钮
     private JList<String> memberList;               // 群成员列表组件
     private DefaultListModel<String> memberListModel; // 群成员列表数据模型
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss"); // 时间格式化器
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss"); // 时间格式化器
 
     /**
      * 构造函数
@@ -237,7 +251,7 @@ public class GroupChatWindow extends JFrame {
                             
                             displayContent += " (已保存到: " + outputFile.getAbsolutePath() + ")";
                         }
-                    } catch (Exception ex) {
+                    } catch (IOException ex) {
                         displayContent += " (保存失败: " + ex.getMessage() + ")";
                     }
                 }

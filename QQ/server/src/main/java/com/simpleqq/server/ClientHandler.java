@@ -1,14 +1,14 @@
 package com.simpleqq.server;
 
-import com.simpleqq.common.Message;
-import com.simpleqq.common.MessageType;
-import com.simpleqq.common.User;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.List;
+
+import com.simpleqq.common.Message;
+import com.simpleqq.common.MessageType;
+import com.simpleqq.common.User;
 
 /**
  * 客户端处理器类
@@ -27,6 +27,7 @@ public class ClientHandler extends Thread {
      * @param socket 客户端Socket连接
      * @param server 服务器实例
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     public ClientHandler(Socket socket, Server server) {
         this.socket = socket;
         this.server = server;
@@ -60,6 +61,7 @@ public class ClientHandler extends Thread {
      * 持续监听客户端消息并进行处理
      */
     @Override
+    @SuppressWarnings("CallToPrintStackTrace")
     public void run() {
         try {
             while (true) {
@@ -69,59 +71,24 @@ public class ClientHandler extends Thread {
 
                 // 根据消息类型分发处理
                 switch (message.getType()) {
-                    case LOGIN:
-                        handleLogin(message);
-                        break;
-                    case REGISTER:
-                        handleRegister(message);
-                        break;
-                    case FRIEND_REQUEST:
-                        handleFriendRequest(message);
-                        break;
-                    case FRIEND_ACCEPT:
-                        handleFriendAccept(message);
-                        break;
-                    case FRIEND_REJECT:
-                        handleFriendReject(message);
-                        break;
-                    case DELETE_FRIEND:
-                        handleDeleteFriend(message);
-                        break;
-                    case TEXT_MESSAGE:
-                        handleTextMessage(message);
-                        break;
-                    case GROUP_MESSAGE:
-                        handleGroupMessage(message);
-                        break;
-                    case IMAGE_MESSAGE:
-                        handleImageMessage(message);
-                        break;
-                    case GROUP_INVITE:
-                        handleGroupInvite(message);
-                        break;
-                    case GROUP_ACCEPT:
-                        handleGroupAccept(message);
-                        break;
-                    case GROUP_REJECT:
-                        handleGroupReject(message);
-                        break;
-                    case CREATE_GROUP:
-                        handleCreateGroup(message);
-                        break;
-                    case GET_GROUPS:
-                        sendGroupList(message.getSenderId());
-                        break;
-                    case GET_PENDING_REQUESTS:
-                        sendPendingRequests(message.getSenderId());
-                        break;
-                    case GET_GROUP_MEMBERS:
-                        sendGroupMembers(message.getContent(), message.getSenderId());
-                        break;
-                    case FRIEND_LIST:
-                        sendFriendList(message.getSenderId());
-                        break;
-                    default:
-                        System.out.println("Unknown message type: " + message.getType());
+                    case LOGIN -> handleLogin(message);
+                    case REGISTER -> handleRegister(message);
+                    case FRIEND_REQUEST -> handleFriendRequest(message);
+                    case FRIEND_ACCEPT -> handleFriendAccept(message);
+                    case FRIEND_REJECT -> handleFriendReject(message);
+                    case DELETE_FRIEND -> handleDeleteFriend(message);
+                    case TEXT_MESSAGE -> handleTextMessage(message);
+                    case GROUP_MESSAGE -> handleGroupMessage(message);
+                    case IMAGE_MESSAGE -> handleImageMessage(message);
+                    case GROUP_INVITE -> handleGroupInvite(message);
+                    case GROUP_ACCEPT -> handleGroupAccept(message);
+                    case GROUP_REJECT -> handleGroupReject(message);
+                    case CREATE_GROUP -> handleCreateGroup(message);
+                    case GET_GROUPS -> sendGroupList(message.getSenderId());
+                    case GET_PENDING_REQUESTS -> sendPendingRequests(message.getSenderId());
+                    case GET_GROUP_MEMBERS -> sendGroupMembers(message.getContent(), message.getSenderId());
+                    case FRIEND_LIST -> sendFriendList(message.getSenderId());
+                    default -> System.out.println("Unknown message type: " + message.getType());
                 }
             }
         } catch (IOException | ClassNotFoundException e) {

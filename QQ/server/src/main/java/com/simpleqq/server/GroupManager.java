@@ -1,6 +1,11 @@
 package com.simpleqq.server;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -16,8 +21,8 @@ public class GroupManager {
     private static final String GROUPS_FILE = "groups.txt";              // 群组信息文件
     private static final String GROUP_INVITES_FILE = "group_invites.txt"; // 群组邀请文件
 
-    private Map<String, List<String>> groups;              // 群组映射表，key为群组ID，value为成员ID列表
-    private Map<String, List<String>> pendingGroupInvites; // 待处理群组邀请，key为被邀请者ID，value为群组ID列表
+    private final Map<String, List<String>> groups;              // 群组映射表，key为群组ID，value为成员ID列表
+    private final Map<String, List<String>> pendingGroupInvites; // 待处理群组邀请，key为被邀请者ID，value为群组ID列表
 
     /**
      * 构造函数
@@ -34,6 +39,7 @@ public class GroupManager {
      * 从文件加载群组信息
      * 文件格式：群组ID|成员ID1|成员ID2|...
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     private void loadGroups() {
         try (BufferedReader reader = new BufferedReader(new FileReader(GROUPS_FILE))) {
             String line;
@@ -61,6 +67,7 @@ public class GroupManager {
      * 保存群组信息到文件
      * 将内存中的群组数据写入文件进行持久化
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     private void saveGroups() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(GROUPS_FILE))) {
             for (Map.Entry<String, List<String>> entry : groups.entrySet()) {
@@ -81,6 +88,7 @@ public class GroupManager {
      * 从文件加载群组邀请信息
      * 文件格式：被邀请者ID|群组ID
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     private void loadGroupInvites() {
         try (BufferedReader reader = new BufferedReader(new FileReader(GROUP_INVITES_FILE))) {
             String line;
@@ -103,6 +111,7 @@ public class GroupManager {
     /**
      * 保存群组邀请信息到文件
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     private void saveGroupInvites() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(GROUP_INVITES_FILE))) {
             for (Map.Entry<String, List<String>> entry : pendingGroupInvites.entrySet()) {

@@ -1,12 +1,20 @@
 package com.simpleqq.client;
 
+import java.awt.GridLayout;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
 import com.simpleqq.common.Message;
 import com.simpleqq.common.MessageType;
 import com.simpleqq.common.User;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
 
 /**
  * 登录窗口类
@@ -18,7 +26,7 @@ public class LoginWindow extends JFrame {
     private JPasswordField passwordField; // 密码输入框
     private JButton loginButton;          // 登录按钮
     private JButton registerButton;       // 注册按钮
-    private Client client;                // 客户端连接对象
+    private final Client client;                // 客户端连接对象
 
     /**
      * 构造函数
@@ -28,7 +36,7 @@ public class LoginWindow extends JFrame {
         this.client = client;
         initializeUI();
         setupEventHandlers();
-        setupMessageListener();
+        // setupMessageListener(); // 移除构造函数中的调用
     }
 
     /**
@@ -140,7 +148,9 @@ public class LoginWindow extends JFrame {
     public static void main(String[] args) {
         Client client = new Client();
         SwingUtilities.invokeLater(() -> {
-            new LoginWindow(client).setVisible(true);
+            LoginWindow loginWindow = new LoginWindow(client);
+            loginWindow.setupMessageListener(); // 在对象创建后调用
+            loginWindow.setVisible(true);
         });
     }
 }

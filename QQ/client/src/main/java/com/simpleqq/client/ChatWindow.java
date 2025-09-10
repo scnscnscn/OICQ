@@ -1,14 +1,28 @@
 package com.simpleqq.client;
 
-import com.simpleqq.common.Message;
-import com.simpleqq.common.MessageType;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
+import com.simpleqq.common.Message;
+import com.simpleqq.common.MessageType;
 
 /**
  * 主聊天窗口类
@@ -16,14 +30,14 @@ import java.util.Map;
  * 提供好友管理、群组管理、消息处理等核心功能
  */
 public class ChatWindow extends JFrame {
-    private Client client;                                    // 客户端连接对象
+    private final Client client;                                    // 客户端连接对象
     private JTabbedPane tabbedPane;                          // 主标签页容器
     private JList<String> friendList;                       // 好友列表组件
     private JList<String> groupList;                        // 群组列表组件
     private DefaultListModel<String> friendListModel;       // 好友列表数据模型
     private DefaultListModel<String> groupListModel;        // 群组列表数据模型
-    private Map<String, SingleChatWindow> singleChatWindows; // 私聊窗口管理器
-    private Map<String, GroupChatWindow> groupChatWindows;   // 群聊窗口管理器
+    private final Map<String, SingleChatWindow> singleChatWindows; // 私聊窗口管理器
+    private final Map<String, GroupChatWindow> groupChatWindows;   // 群聊窗口管理器
 
     // 请求处理相关组件
     private JPanel requestPanel;                             // 请求处理面板
@@ -284,71 +298,41 @@ public class ChatWindow extends JFrame {
      */
     private void handleIncomingMessage(Message message) {
         switch (message.getType()) {
-            case FRIEND_LIST:
-                updateFriendList(message.getContent());
-                break;
-            case TEXT_MESSAGE:
-            case IMAGE_MESSAGE:
-                handleChatMessage(message);
-                break;
-            case GROUP_MESSAGE:
-                openGroupChatWindow(message.getReceiverId()).displayMessage(message);
-                break;
-            case ADD_FRIEND_SUCCESS:
+            case FRIEND_LIST -> updateFriendList(message.getContent());
+            case TEXT_MESSAGE, IMAGE_MESSAGE -> handleChatMessage(message);
+            case GROUP_MESSAGE -> openGroupChatWindow(message.getReceiverId()).displayMessage(message);
+            case ADD_FRIEND_SUCCESS -> {
                 JOptionPane.showMessageDialog(this, "添加好友成功: " + message.getContent());
                 refreshFriendList();
-                break;
-            case ADD_FRIEND_FAIL:
-                JOptionPane.showMessageDialog(this, "添加好友失败: " + message.getContent());
-                break;
-            case DELETE_FRIEND_SUCCESS:
+            }
+            case ADD_FRIEND_FAIL -> JOptionPane.showMessageDialog(this, "添加好友失败: " + message.getContent());
+            case DELETE_FRIEND_SUCCESS -> {
                 JOptionPane.showMessageDialog(this, "删除好友成功: " + message.getContent());
                 refreshFriendList();
-                break;
-            case DELETE_FRIEND_FAIL:
-                JOptionPane.showMessageDialog(this, "删除好友失败: " + message.getContent());
-                break;
-            case SERVER_MESSAGE:
-                JOptionPane.showMessageDialog(this, "服务器消息: " + message.getContent());
-                break;
-            case FRIEND_REQUEST:
-                handleFriendRequest(message);
-                break;
-            case FRIEND_ACCEPT:
+            }
+            case DELETE_FRIEND_FAIL -> JOptionPane.showMessageDialog(this, "删除好友失败: " + message.getContent());
+            case SERVER_MESSAGE -> JOptionPane.showMessageDialog(this, "服务器消息: " + message.getContent());
+            case FRIEND_REQUEST -> handleFriendRequest(message);
+            case FRIEND_ACCEPT -> {
                 JOptionPane.showMessageDialog(this, message.getSenderId() + " 接受了您的好友请求。");
                 refreshFriendList();
-                break;
-            case FRIEND_REJECT:
-                JOptionPane.showMessageDialog(this, message.getSenderId() + " 拒绝了您的好友请求。");
-                break;
-            case GROUP_INVITE:
-                handleGroupInvite(message);
-                break;
-            case GET_GROUPS:
-                updateGroupList(message.getContent());
-                break;
-            case GET_PENDING_REQUESTS:
-                updatePendingRequests(message.getContent());
-                break;
-            case CREATE_GROUP_SUCCESS:
+            }
+            case FRIEND_REJECT -> JOptionPane.showMessageDialog(this, message.getSenderId() + " 拒绝了您的好友请求。");
+            case GROUP_INVITE -> handleGroupInvite(message);
+            case GET_GROUPS -> updateGroupList(message.getContent());
+            case GET_PENDING_REQUESTS -> updatePendingRequests(message.getContent());
+            case CREATE_GROUP_SUCCESS -> {
                 JOptionPane.showMessageDialog(this, "群聊创建成功: " + message.getContent());
                 refreshGroupList();
-                break;
-            case CREATE_GROUP_FAIL:
-                JOptionPane.showMessageDialog(this, "群聊创建失败: " + message.getContent());
-                break;
-            case GROUP_JOIN_SUCCESS:
+            }
+            case CREATE_GROUP_FAIL -> JOptionPane.showMessageDialog(this, "群聊创建失败: " + message.getContent());
+            case GROUP_JOIN_SUCCESS -> {
                 JOptionPane.showMessageDialog(this, "成功加入群聊: " + message.getContent());
                 refreshGroupList();
-                break;
-            case GROUP_JOIN_FAIL:
-                JOptionPane.showMessageDialog(this, "加入群聊失败: " + message.getContent());
-                break;
-            case GET_GROUP_MEMBERS:
-                updateGroupMembers(message);
-                break;
-            default:
-                System.out.println("Unhandled message type in ChatWindow: " + message.getType());
+            }
+            case GROUP_JOIN_FAIL -> JOptionPane.showMessageDialog(this, "加入群聊失败: " + message.getContent());
+            case GET_GROUP_MEMBERS -> updateGroupMembers(message);
+            default -> System.out.println("Unhandled message type in ChatWindow: " + message.getType());
         }
     }
 

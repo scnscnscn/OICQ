@@ -1,13 +1,13 @@
 package com.simpleqq.client;
 
-import com.simpleqq.common.Message;
-import com.simpleqq.common.User;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.function.Consumer;
+
+import com.simpleqq.common.Message;
+import com.simpleqq.common.User;
 
 /**
  * 客户端核心类
@@ -64,6 +64,7 @@ public class Client {
      * 断开与服务器的连接
      * 关闭所有网络资源
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     public void disconnect() {
         try {
             if (socket != null) socket.close();
@@ -78,6 +79,7 @@ public class Client {
      * 发送消息到服务器
      * @param message 要发送的消息对象
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     public void sendMessage(Message message) {
         try {
             oos.writeObject(message);
@@ -114,6 +116,7 @@ public class Client {
     /**
      * 主方法，用于测试客户端连接
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     public static void main(String[] args) {
         Client client = new Client();
         try {

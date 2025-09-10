@@ -1,10 +1,7 @@
 package com.simpleqq.client;
 
-import com.simpleqq.common.Message;
-import com.simpleqq.common.MessageType;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
@@ -16,20 +13,32 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import com.simpleqq.common.Message;
+import com.simpleqq.common.MessageType;
+
 /**
  * 私聊窗口类
  * 提供一对一聊天功能，支持文本消息和图片传输
  * 包含聊天记录加载、保存等功能
  */
 public class SingleChatWindow extends JFrame {
-    private Client client;                    // 客户端连接对象
-    private String friendId;                  // 聊天对象的用户ID
+    private final Client client;                    // 客户端连接对象
+    private final String friendId;                  // 聊天对象的用户ID
     private JTextArea chatArea;               // 聊天内容显示区域
     private JTextField messageField;          // 消息输入框
     private JButton sendButton;               // 发送文本消息按钮
     private JButton sendImageButton;          // 发送图片按钮
     private JButton saveHistoryButton;        // 保存聊天记录按钮
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss"); // 时间格式化器
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss"); // 时间格式化器
 
     /**
      * 构造函数
@@ -178,7 +187,7 @@ public class SingleChatWindow extends JFrame {
                             
                             displayContent += " (已保存到: " + outputFile.getAbsolutePath() + ")";
                         }
-                    } catch (Exception ex) {
+                    } catch (IOException ex) {
                         displayContent += " (保存失败: " + ex.getMessage() + ")";
                     }
                 }

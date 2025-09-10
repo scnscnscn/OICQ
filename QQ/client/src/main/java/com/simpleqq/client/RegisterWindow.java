@@ -1,11 +1,19 @@
 package com.simpleqq.client;
 
+import java.awt.GridLayout;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+
 import com.simpleqq.common.Message;
 import com.simpleqq.common.MessageType;
-
-import javax.swing.*;
-import java.awt.*;
-import java.io.IOException;
 
 /**
  * 注册窗口类
@@ -19,8 +27,8 @@ public class RegisterWindow extends JFrame {
     private JPasswordField confirmPasswordField;   // 确认密码输入框
     private JButton registerButton;                // 注册按钮
     private JButton backButton;                    // 返回登录按钮
-    private Client client;                         // 客户端连接对象
-    private LoginWindow loginWindow;               // 父登录窗口引用
+    private final Client client;                         // 客户端连接对象
+    private final LoginWindow loginWindow;               // 父登录窗口引用
 
     /**
      * 构造函数

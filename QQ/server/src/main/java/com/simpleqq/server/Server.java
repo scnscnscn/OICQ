@@ -1,9 +1,5 @@
 package com.simpleqq.server;
 
-import com.simpleqq.common.Message;
-import com.simpleqq.common.MessageType;
-import com.simpleqq.common.User;
-
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,6 +10,10 @@ import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.simpleqq.common.Message;
+import com.simpleqq.common.MessageType;
+import com.simpleqq.common.User;
+
 /**
  * 服务器主类
  * 负责启动服务器、管理客户端连接、处理消息转发和数据持久化
@@ -21,10 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Server {
     private static final int PORT = 8888;                              // 服务器监听端口
-    private UserManager userManager;                                   // 用户管理器，处理用户相关操作
-    private GroupManager groupManager;                                 // 群组管理器，处理群组相关操作
-    private Map<String, ClientHandler> onlineClients;                 // 在线客户端映射表，key为用户ID
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // 日期格式化器
+    private final UserManager userManager;                                   // 用户管理器，处理用户相关操作
+    private final GroupManager groupManager;                                 // 群组管理器，处理群组相关操作
+    private final Map<String, ClientHandler> onlineClients;                 // 在线客户端映射表，key为用户ID
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); // 日期格式化器
 
     /**
      * 构造函数
@@ -103,6 +103,7 @@ public class Server {
      * 创建ServerSocket并持续监听客户端连接请求
      * 为每个新连接创建独立的ClientHandler线程
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     public void start() {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server started on port " + PORT);
@@ -125,23 +126,28 @@ public class Server {
      * 根据消息类型确定保存的文件名和格式
      * @param message 要保存的消息对象
      */
+    @SuppressWarnings("CallToPrintStackTrace")
     public void saveChatMessage(Message message) {
         String chatFileName;
         
-        if (message.getType() == MessageType.TEXT_MESSAGE || message.getType() == MessageType.IMAGE_MESSAGE) {
-            // 私聊消息：按用户ID字母顺序生成文件名，确保一致性
-            String sender = message.getSenderId();
-            String receiver = message.getReceiverId();
-            if (sender.compareTo(receiver) < 0) {
-                chatFileName = "chat_history_" + sender + "_" + receiver + ".txt";
-            } else {
-                chatFileName = "chat_history_" + receiver + "_" + sender + ".txt";
-            }
-        } else if (message.getType() == MessageType.GROUP_MESSAGE) {
-            // 群聊消息：使用群组ID生成文件名
-            chatFileName = "chat_history_group_" + message.getReceiverId() + ".txt";
-        } else {
+        if (null == message.getType()) {
             return; // 不保存其他类型的消息
+        } else switch (message.getType()) {
+            case TEXT_MESSAGE, IMAGE_MESSAGE -> {
+                // 私聊消息：按用户ID字母顺序生成文件名，确保一致性
+                String sender = message.getSenderId();
+                String receiver = message.getReceiverId();
+                if (sender.compareTo(receiver) < 0) {
+                    chatFileName = "chat_history_" + sender + "_" + receiver + ".txt";
+                } else {
+                    chatFileName = "chat_history_" + receiver + "_" + sender + ".txt";
+                }
+            }
+            case GROUP_MESSAGE -> // 群聊消息：使用群组ID生成文件名
+                chatFileName = "chat_history_group_" + message.getReceiverId() + ".txt";
+            default -> {
+                return; // 不保存其他类型的消息
+            }
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(chatFileName, true))) {

@@ -50,3 +50,6 @@ hs_err_pid*
 .DS_Store
 # Windows
 Thumbs.db
+
+# Chat history
+*txt

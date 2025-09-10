@@ -8,9 +8,9 @@ import java.io.Serializable;
  * 实现Serializable接口以支持对象序列化
  */
 public class User implements Serializable {
-    private String id;           // 用户唯一标识ID
-    private String username;     // 用户显示名称
-    private String password;     // 用户登录密码
+    private final String id;           // 用户唯一标识ID
+    private final String username;     // 用户显示名称
+    private final String password;     // 用户登录密码
     private boolean isOnline;    // 用户在线状态标志
 
     /**
