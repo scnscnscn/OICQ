@@ -290,15 +290,44 @@ public class GroupChatWindow extends JFrame {
      */
     private void loadChatHistory() {
         String fileName = "chat_history_group_" + groupId + ".txt";
+        File historyFile = findExistingHistoryFile(fileName);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(historyFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 chatArea.append(line + "\n");
             }
         } catch (IOException e) {
-            System.err.println("No chat history found for group " + groupId + ": " + e.getMessage());
+            System.err.println("No chat history found for group " + groupId + " at " + historyFile.getAbsolutePath() + ": " + e.getMessage());
         }
+    }
+
+    // 查找已存在的历史文件：优先使用当前运行目录下的 .history，其次向上查找父目录中的 .history（最多3层）
+    private File findExistingHistoryFile(String fileName) {
+        File cwd = new File(System.getProperty("user.dir"));
+        File tryDir = new File(cwd, ".history");
+        File tryFile = new File(tryDir, fileName);
+        if (tryFile.exists()) {
+            System.out.println("Found history at: " + tryFile.getAbsolutePath());
+            return tryFile;
+        }
+
+        File dir = cwd;
+        for (int i = 0; i < 3; i++) {
+            dir = dir.getParentFile();
+            if (dir == null) break;
+            File parentHistory = new File(dir, ".history");
+            File parentFile = new File(parentHistory, fileName);
+            if (parentFile.exists()) {
+                System.out.println("Found history at parent: " + parentFile.getAbsolutePath());
+                return parentFile;
+            }
+        }
+
+        // 如果都没找到，返回运行目录下的目标路径（但文件可能不存在）
+        if (!tryDir.exists()) tryDir.mkdirs();
+        System.out.println("No existing history found; will try: " + tryFile.getAbsolutePath());
+        return tryFile;
     }
 
     /**

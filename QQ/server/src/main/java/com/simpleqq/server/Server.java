@@ -1,6 +1,7 @@
 package com.simpleqq.server;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -150,7 +151,12 @@ public class Server {
             }
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(chatFileName, true))) {
+    // 将聊天记录保存到运行目录下的 .history 子目录
+    File historyDir = new File(System.getProperty("user.dir"), ".history");
+    if (!historyDir.exists()) historyDir.mkdirs();
+    File historyFile = new File(historyDir, chatFileName);
+
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(historyFile, true))) {
             String contentToSave;
             if (message.getType() == MessageType.IMAGE_MESSAGE) {
                 // 图片消息只保存文件名，不保存Base64数据
@@ -166,6 +172,7 @@ public class Server {
             writer.write(logEntry);
             writer.newLine();
         } catch (IOException e) {
+            System.err.println("Failed to write chat history to " + historyFile.getAbsolutePath() + ": " + e.getMessage());
             e.printStackTrace();
         }
     }

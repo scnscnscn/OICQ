@@ -232,8 +232,9 @@ public class SingleChatWindow extends JFrame {
             } else {
                 fileName = "chat_history_" + friendId + "_" + currentUserId + ".txt";
             }
+            File historyFile = findExistingHistoryFile(fileName);
 
-            try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(historyFile))) {
                 StringBuilder sb = new StringBuilder();
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -245,9 +246,80 @@ public class SingleChatWindow extends JFrame {
                     chatArea.setCaretPosition(chatArea.getDocument().getLength());
                 });
             } catch (IOException e) {
-                System.err.println("No chat history found for " + friendId + ": " + e.getMessage());
+                System.err.println("No chat history found for " + friendId + " at " + historyFile.getAbsolutePath() + ": " + e.getMessage());
             }
         }).start();
+    }
+
+    // 查找已存在的历史文件：优先使用当前运行目录下的 .history，其次向上查找父目录中的 .history（最多3层），
+    // 并尝试查找 ancestor/server/.history（兼容 server 模块保存位置）。如果都没找到，返回当前运行目录下的目标路径（并创建 .history）。
+    private File findExistingHistoryFile(String fileName) {
+        File cwd = new File(System.getProperty("user.dir"));
+        File tryDir = new File(cwd, ".history");
+        File tryFile = new File(tryDir, fileName);
+        if (tryFile.exists()) {
+            System.out.println("Found history at: " + tryFile.getAbsolutePath());
+            return tryFile;
+        }
+
+        // 向上查找父目录的 .history（最多3层）以及可能的 server/.history
+        File dir = cwd;
+        for (int i = 0; i < 3; i++) {
+            dir = dir.getParentFile();
+            if (dir == null) break;
+            File parentHistory = new File(dir, ".history");
+            File parentFile = new File(parentHistory, fileName);
+            if (parentFile.exists()) {
+                System.out.println("Found history at parent: " + parentFile.getAbsolutePath());
+                return parentFile;
+            }
+            // 检查可能的 server/.history
+            File serverHistory = new File(dir, "server/.history");
+            File serverFile = new File(serverHistory, fileName);
+            if (serverFile.exists()) {
+                System.out.println("Found history at server: " + serverFile.getAbsolutePath());
+                return serverFile;
+            }
+        }
+
+        // 再次从当前目录向上彻底查找 server/.history（直到根）
+        File cur = cwd;
+        while (cur != null) {
+            File serverHistory = new File(cur, "server/.history");
+            File serverFile = new File(serverHistory, fileName);
+            if (serverFile.exists()) {
+                System.out.println("Found history at ancestor server: " + serverFile.getAbsolutePath());
+                return serverFile;
+            }
+            cur = cur.getParentFile();
+        }
+
+        // 如果都没找到，确保当前运行目录下的 .history 存在并返回默认路径
+        if (!tryDir.exists()) tryDir.mkdirs();
+        System.out.println("No existing history found; will try: " + tryFile.getAbsolutePath());
+        return tryFile;
+    }
+
+    // 查找或创建一个用于保存的 .history 目录（优先返回已存在的 server/.history 或 cwd/.history）
+    private File findHistoryDir() {
+        File cwd = new File(System.getProperty("user.dir"));
+        File tryDir = new File(cwd, ".history");
+        if (tryDir.exists() && tryDir.isDirectory()) return tryDir;
+
+        // 向上查找父目录的 .history 或 server/.history
+        File dir = cwd;
+        for (int i = 0; i < 10; i++) {
+            File candidate = new File(dir, ".history");
+            if (candidate.exists() && candidate.isDirectory()) return candidate;
+            File serverCandidate = new File(dir, "server/.history");
+            if (serverCandidate.exists() && serverCandidate.isDirectory()) return serverCandidate;
+            dir = dir.getParentFile();
+            if (dir == null) break;
+        }
+
+        // 都没找到则在 cwd 创建并返回
+        if (!tryDir.exists()) tryDir.mkdirs();
+        return tryDir;
     }
 
     /**
@@ -260,8 +332,12 @@ public class SingleChatWindow extends JFrame {
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         
         // 设置默认文件名
-        String defaultFileName = "chat_history_" + client.getCurrentUser().getId() + "_" + friendId + ".txt";
-        fileChooser.setSelectedFile(new File(defaultFileName));
+    String defaultFileName = "chat_history_" + client.getCurrentUser().getId() + "_" + friendId + ".txt";
+    // 将默认目录设置为运行目录下的 .history
+    File historyDir = new File(System.getProperty("user.dir"), ".history");
+    if (!historyDir.exists()) historyDir.mkdirs();
+    fileChooser.setCurrentDirectory(historyDir);
+    fileChooser.setSelectedFile(new File(historyDir, defaultFileName));
 
         int userSelection = fileChooser.showSaveDialog(this);
 
