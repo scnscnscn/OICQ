@@ -3,7 +3,7 @@
     <option name="chatModelSelected">
       <map>
         <entry key="$USER_HOME$/Desktop/OICQ/project/SimpleQQ_Maven-master/simpleQQchat-chat" value="default" />
-        <entry key="D:/javawd/project-chat" value="default" />
+        <entry key="D:/javawd/project-chat" value="dashscope_qwen3_coder_default" />
       </map>
     </option>
     <option name="parameter">
@@ -38,6 +38,402 @@
     </option>
     <option name="recentComplexQueries">
       <map>
+        <entry key="project|1931851431174280|AiAssistantAgent">
+          <value>
+            <list>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="帮我解释所选代码" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list />
+                </option>
+              </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="tag">
+                        <ChatAskTag>
+                          <option name="displayText" value="#UserManager.java 1-231" />
+                          <option name="id" value="D:\javawd\project\SimpleQQ_Maven-master\simpleQQchat\server\src\main\java\com\simpleqq\server\UserManager.java#L1-L231" />
+                          <option name="text" value="UserManager.java" />
+                          <option name="type" value="context" />
+                        </ChatAskTag>
+                      </option>
+                      <option name="type" value="tag" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="selectedCode" />
+                          <option name="drillDownEnable" value="false" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="selectedCode" />
+                          <option name="id" value="858b986a-9b02-4d41-87ef-c7b6b92b44d7" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#selectedCode" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="endLine" value="231" />
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="endLine">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="fileName">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="filePath">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="selectedItemContent">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="startLine">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\javawd\project\SimpleQQ_Maven-master\simpleQQchat\server\src\main\java\com\simpleqq\server\UserManager.java#L1-L231" />
+                      <option name="name" value="UserManager.java" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="statLine" value="1" />
+                      <option name="text" value="UserManager.java" />
+                      <option name="type" value="context" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="package com.simpleqq.server;&#10;&#10;import com.simpleqq.common.Message;&#10;import com.simpleqq.common.MessageType;&#10;import com.simpleqq.common.User;&#10;&#10;import java.io.BufferedWriter;&#10;import java.io.FileWriter;&#10;import java.io.IOException;&#10;import java.net.ServerSocket;&#10;import java.net.Socket;&#10;import java.text.SimpleDateFormat;&#10;import java.util.Date;&#10;import java.util.Map;&#10;import java.util.concurrent.ConcurrentHashMap;&#10;&#10;public class Server {&#10;    private static final int PORT = 8888;&#10;    private UserManager userManager;&#10;    private GroupManager groupManager;&#10;    private Map&lt;String, ClientHandler&gt; onlineClients;&#10;    private SimpleDateFormat dateFormat = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;);&#10;&#10;    public Server() {&#10;        userManager = new UserManager();&#10;        groupManager = new GroupManager();&#10;        onlineClients = new ConcurrentHashMap&lt;&gt;();&#10;    }&#10;&#10;    public UserManager getUserManager() {&#10;        return userManager;&#10;    }&#10;&#10;    public GroupManager getGroupManager() {&#10;        return groupManager;&#10;    }&#10;&#10;    public Map&lt;String, ClientHandler&gt; getOnlineClients() {&#10;        return onlineClients;&#10;    }&#10;&#10;    public synchronized void addOnlineClient(String userId, ClientHandler handler) {&#10;        onlineClients.put(userId, handler);&#10;        User user = userManager.getUserById(userId);&#10;        if (user != null) {&#10;            user.setOnline(true);&#10;        }&#10;        System.out.println(&quot;User &quot; + userId + &quot; is now online. Total online: &quot; + onlineClients.size());&#10;        try {&#10;            // 通知所有在线用户，有新用户上线&#10;            for (ClientHandler client : onlineClients.values()) {&#10;                client.sendOnlineUsersList();&#10;            }&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    public synchronized void removeClient(String userId) {&#10;        onlineClients.remove(userId);&#10;        User user = userManager.getUserById(userId);&#10;        if (user != null) {&#10;            user.setOnline(false);&#10;        }&#10;        System.out.println(&quot;User &quot; + userId + &quot; went offline. Total online: &quot; + onlineClients.size());&#10;        try {&#10;            // 通知所有在线用户，有用户下线&#10;            for (ClientHandler client : onlineClients.values()) {&#10;                client.sendOnlineUsersList();&#10;            }&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    public boolean isUserOnline(String userId) {&#10;        return onlineClients.containsKey(userId);&#10;    }&#10;&#10;    public void start() {&#10;        try (ServerSocket serverSocket = new ServerSocket(PORT)) {&#10;            System.out.println(&quot;Server started on port &quot; + PORT);&#10;            while (true) {&#10;                Socket clientSocket = serverSocket.accept();&#10;                System.out.println(&quot;New client connected: &quot; + clientSocket.getInetAddress().getHostAddress());&#10;                new ClientHandler(clientSocket, this).start();&#10;            }&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    public void saveChatMessage(Message message) {&#10;        String chatFileName;&#10;        if (message.getType() == MessageType.TEXT_MESSAGE || message.getType() == MessageType.IMAGE_MESSAGE) {&#10;            // 单聊&#10;            String sender = message.getSenderId();&#10;            String receiver = message.getReceiverId();&#10;            // 保证文件名一致性，按字母顺序排列&#10;            if (sender.compareTo(receiver) &lt; 0) {&#10;                chatFileName = &quot;chat_history_&quot; + sender + &quot;_&quot; + receiver + &quot;.txt&quot;;&#10;            } else {&#10;                chatFileName = &quot;chat_history_&quot; + receiver + &quot;_&quot; + sender + &quot;.txt&quot;;&#10;            }&#10;        } else if (message.getType() == MessageType.GROUP_MESSAGE) {&#10;            // 群聊，假设receiverId是群ID&#10;            chatFileName = &quot;chat_history_group_&quot; + message.getReceiverId() + &quot;.txt&quot;;&#10;        } else {&#10;            return; // 不保存其他类型的消息&#10;        }&#10;&#10;        try (BufferedWriter writer = new BufferedWriter(new FileWriter(chatFileName, true))) {&#10;            String contentToSave;&#10;            if (message.getType() == MessageType.IMAGE_MESSAGE) {&#10;                // For image messages, save only the filename&#10;                contentToSave = &quot;[图片: &quot; + message.getContent() + &quot;]&quot;;&#10;            } else {&#10;                contentToSave = message.getContent();&#10;            }&#10;            writer.write(dateFormat.format(new Date(message.getTimestamp())) + &quot; [&quot; + message.getSenderId() + &quot;] to [&quot; + message.getReceiverId() + &quot;]: &quot; + contentToSave);&#10;            writer.newLine();&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    public void forwardMessage(Message message) {&#10;        String receiverId = message.getReceiverId();&#10;        ClientHandler receiverHandler = onlineClients.get(receiverId);&#10;        if (receiverHandler != null) {&#10;            try {&#10;                receiverHandler.sendMessage(message);&#10;            } catch (IOException e) {&#10;                System.err.println(&quot;Error forwarding message to &quot; + receiverId + &quot;: &quot; + e.getMessage());&#10;            }&#10;        } else {&#10;            System.out.println(&quot;Receiver &quot; + receiverId + &quot; is not online. Message not forwarded.&quot;);&#10;            // Optionally, send a message back to sender that receiver is offline&#10;        }&#10;    }&#10;&#10;    public boolean createGroup(String groupId, String creatorId) {&#10;        return groupManager.createGroup(groupId, creatorId);&#10;    }&#10;&#10;    public static void main(String[] args) {&#10;        Server server = new Server();&#10;        server.start();&#10;    }&#10;}&#10;&#10;&#10;" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="selectedCode" />
+                          <option name="drillDownEnable" value="false" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="selectedCode" />
+                          <option name="id" value="858b986a-9b02-4d41-87ef-c7b6b92b44d7" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#selectedCode" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="endLine" value="153" />
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="endLine">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="fileName">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="filePath">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="selectedItemContent">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="startLine">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\javawd\project\QQ\server\src\main\java\com\simpleqq\server\Server.java#L1-L153" />
+                      <option name="name" value="D:\javawd\project\QQ\server\src\main\java\com\simpleqq\server\Server.java#L1-L153" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="sourceType" value="system" />
+                      <option name="statLine" value="1" />
+                      <option name="text" value="Server.java" />
+                      <option name="type" value="currentFile" />
+                    </ChatContextTag>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="selectedCode" />
+                          <option name="drillDownEnable" value="false" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="selectedCode" />
+                          <option name="id" value="858b986a-9b02-4d41-87ef-c7b6b92b44d7" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#selectedCode" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="endLine" value="231" />
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="endLine">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="fileName">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="filePath">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="selectedItemContent">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="startLine">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\javawd\project\SimpleQQ_Maven-master\simpleQQchat\server\src\main\java\com\simpleqq\server\UserManager.java#L1-L231" />
+                      <option name="name" value="UserManager.java" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="statLine" value="1" />
+                      <option name="text" value="UserManager.java" />
+                      <option name="type" value="context" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="package com.simpleqq.server;&#10;&#10;import com.simpleqq.common.User;&#10;&#10;import java.io.*;&#10;import java.util.ArrayList;&#10;import java.util.List;&#10;import java.util.Map;&#10;import java.util.concurrent.ConcurrentHashMap;&#10;import java.util.stream.Collectors;&#10;&#10;public class GroupManager {&#10;    private static final String GROUPS_FILE = &quot;groups.txt&quot;;&#10;    private static final String GROUP_INVITES_FILE = &quot;group_invites.txt&quot;;&#10;&#10;    // groupId -&gt; List of memberIds&#10;    private Map&lt;String, List&lt;String&gt;&gt; groups;&#10;    // invitedId -&gt; List of groupId&#10;    private Map&lt;String, List&lt;String&gt;&gt; pendingGroupInvites;&#10;&#10;    public GroupManager() {&#10;        groups = new ConcurrentHashMap&lt;&gt;();&#10;        pendingGroupInvites = new ConcurrentHashMap&lt;&gt;();&#10;        loadGroups();&#10;        loadGroupInvites();&#10;    }&#10;&#10;    private void loadGroups() {&#10;        try (BufferedReader reader = new BufferedReader(new FileReader(GROUPS_FILE))) {&#10;            String line;&#10;            while ((line = reader.readLine()) != null) {&#10;                String[] parts = line.split(&quot;\\|&quot;);&#10;                if (parts.length &gt;= 2) {&#10;                    String groupId = parts[0];&#10;                    List&lt;String&gt; members = new ArrayList&lt;&gt;();&#10;                    for (int i = 1; i &lt; parts.length; i++) {&#10;                        members.add(parts[i]);&#10;                    }&#10;                    groups.put(groupId, members);&#10;                }&#10;            }&#10;            System.out.println(&quot;Loaded &quot; + groups.size() + &quot; groups.&quot;);&#10;        } catch (FileNotFoundException e) {&#10;            System.out.println(&quot;Groups file not found. Creating a new one.&quot;);&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    private void saveGroups() {&#10;        try (BufferedWriter writer = new BufferedWriter(new FileWriter(GROUPS_FILE))) {&#10;            for (Map.Entry&lt;String, List&lt;String&gt;&gt; entry : groups.entrySet()) {&#10;                StringBuilder sb = new StringBuilder(entry.getKey());&#10;                for (String memberId : entry.getValue()) {&#10;                    sb.append(&quot;|&quot;).append(memberId);&#10;                }&#10;                writer.write(sb.toString());&#10;                writer.newLine();&#10;            }&#10;            System.out.println(&quot;Saved &quot; + groups.size() + &quot; groups.&quot;);&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    private void loadGroupInvites() {&#10;        try (BufferedReader reader = new BufferedReader(new FileReader(GROUP_INVITES_FILE))) {&#10;            String line;&#10;            while ((line = reader.readLine()) != null) {&#10;                String[] parts = line.split(&quot;\\|&quot;);&#10;                if (parts.length == 2) {&#10;                    String invitedId = parts[0];&#10;                    String groupId = parts[1];&#10;                    pendingGroupInvites.computeIfAbsent(invitedId, k -&gt; new ArrayList&lt;&gt;()).add(groupId);&#10;                }&#10;            }&#10;            System.out.println(&quot;Loaded group invites.&quot;);&#10;        } catch (FileNotFoundException e) {&#10;            System.out.println(&quot;Group invites file not found. Creating a new one.&quot;);&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    private void saveGroupInvites() {&#10;        try (BufferedWriter writer = new BufferedWriter(new FileWriter(GROUP_INVITES_FILE))) {&#10;            for (Map.Entry&lt;String, List&lt;String&gt;&gt; entry : pendingGroupInvites.entrySet()) {&#10;                String invitedId = entry.getKey();&#10;                for (String groupId : entry.getValue()) {&#10;                    writer.write(invitedId + &quot;|&quot; + groupId);&#10;                    writer.newLine();&#10;                }&#10;            }&#10;            System.out.println(&quot;Saved group invites.&quot;);&#10;        } catch (IOException e) {&#10;            e.printStackTrace();&#10;        }&#10;    }&#10;&#10;    public synchronized boolean createGroup(String groupId, String creatorId) {&#10;        if (groups.containsKey(groupId)) {&#10;            return false; // Group ID already exists&#10;        }&#10;        List&lt;String&gt; members = new ArrayList&lt;&gt;();&#10;        members.add(creatorId);&#10;        groups.put(groupId, members);&#10;        saveGroups();&#10;        return true;&#10;    }&#10;&#10;    public synchronized boolean sendGroupInvite(String inviterId, String invitedId, String groupId) {&#10;        // Check if group exists&#10;        if (!groups.containsKey(groupId)) {&#10;            return false; // Group does not exist&#10;        }&#10;        // Check if invited user is already a member&#10;        if (groups.get(groupId).contains(invitedId)) {&#10;            return false; // User is already a member&#10;        }&#10;        // Check if invite already pending - REMOVED TO ALLOW RESENDING INVITES&#10;        // if (pendingGroupInvites.containsKey(invitedId) &amp;&amp; pendingGroupInvites.get(invitedId).contains(groupId)) {&#10;        //     return false; // Invite already pending&#10;        // }&#10;&#10;        // Allow resending invite if not already accepted&#10;        if (pendingGroupInvites.containsKey(invitedId) &amp;&amp; pendingGroupInvites.get(invitedId).contains(groupId)) {&#10;            return true; // Invite already pending, but allow resend for simplicity&#10;        }&#10;&#10;        pendingGroupInvites.computeIfAbsent(invitedId, k -&gt; new ArrayList&lt;&gt;()).add(groupId);&#10;        saveGroupInvites();&#10;        return true;&#10;    }&#10;&#10;    public synchronized boolean acceptGroupInvite(String invitedId, String groupId) {&#10;        List&lt;String&gt; invites = pendingGroupInvites.get(invitedId);&#10;        if (invites != null &amp;&amp; invites.remove(groupId)) {&#10;            groups.computeIfAbsent(groupId, k -&gt; new ArrayList&lt;&gt;()).add(invitedId);&#10;            saveGroups();&#10;            saveGroupInvites();&#10;            return true;&#10;        }&#10;        return false;&#10;    }&#10;&#10;    public synchronized boolean rejectGroupInvite(String invitedId, String groupId) {&#10;        List&lt;String&gt; invites = pendingGroupInvites.get(invitedId);&#10;        if (invites != null &amp;&amp; invites.remove(groupId)) {&#10;            saveGroupInvites();&#10;            return true;&#10;        }&#10;        return false;&#10;    }&#10;&#10;    public List&lt;String&gt; getGroupMembers(String groupId) {&#10;        return groups.get(groupId);&#10;    }&#10;&#10;    public List&lt;String&gt; getPendingGroupInvites(String userId) {&#10;        return pendingGroupInvites.getOrDefault(userId, new ArrayList&lt;&gt;());&#10;    }&#10;&#10;    public List&lt;String&gt; getUserGroups(String userId) {&#10;        return groups.entrySet().stream()&#10;                .filter(entry -&gt; entry.getValue().contains(userId))&#10;                .map(Map.Entry::getKey)&#10;                .collect(Collectors.toList());&#10;    }&#10;&#10;    public Map&lt;String, List&lt;String&gt;&gt; getAllGroups() {&#10;        return groups;&#10;    }&#10;}&#10;&#10;&#10;" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="file" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="file" />
+                          <option name="id" value="7a0c2792-b1ed-49ec-a82b-d97b16a242b4" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#file" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="endLine" />
+                          <entry key="fileName">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="filePath">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="selectedItemContent" />
+                          <entry key="startLine" />
+                        </map>
+                      </option>
+                      <option name="id" value="D:\javawd\project\SimpleQQ_Maven-master\simpleQQchat\server\src\main\java\com\simpleqq\server\GroupManager.java" />
+                      <option name="name" value="D:\javawd\project\SimpleQQ_Maven-master\simpleQQchat\server\src\main\java\com\simpleqq\server\GroupManager.java" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="sourceType" value="system" />
+                      <option name="text" value="GroupManager.java" />
+                      <option name="type" value="currentFile" />
+                    </ChatContextTag>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="selectedCode" />
+                          <option name="drillDownEnable" value="false" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="selectedCode" />
+                          <option name="id" value="858b986a-9b02-4d41-87ef-c7b6b92b44d7" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#selectedCode" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="endLine" value="231" />
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="endLine">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="fileName">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="filePath">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="selectedItemContent">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                          <entry key="startLine">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\javawd\project\SimpleQQ_Maven-master\simpleQQchat\server\src\main\java\com\simpleqq\server\UserManager.java#L1-L231" />
+                      <option name="name" value="UserManager.java" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="statLine" value="1" />
+                      <option name="text" value="UserManager.java" />
+                      <option name="type" value="context" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
+            </list>
+          </value>
+        </entry>
         <entry key="simpleQQchat|1931851431174280|AiAssistantAgent">
           <value>
             <list>
