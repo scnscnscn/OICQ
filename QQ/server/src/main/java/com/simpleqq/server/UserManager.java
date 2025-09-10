@@ -208,10 +208,23 @@ public class UserManager {
 
     /**
      * 发送好友请求
-     * 将好友请求添加到待处理列表，而不是直接建立好友关系
-     * @param senderId 发送者ID
-     * @param receiverId 接收者ID
-     * @return 发送成功返回true，失败返回false
+     * 这是好友系统的核心方法，处理好友请求的创建和验证逻辑
+     * 
+     * 处理流程：
+     * 1. 输入验证：检查发送者和接收者是否存在，防止自己添加自己
+     * 2. 关系检查：验证双方是否已经是好友关系，避免重复添加
+     * 3. 请求查重：检查是否已有相同的待处理请求，防止重复发送
+     * 4. 状态管理：将请求添加到待处理列表，而不是直接建立好友关系
+     * 5. 数据持久化：立即保存到文件，确保数据不丢失
+     * 
+     * 设计要点：
+     * - 使用computeIfAbsent确保线程安全的列表初始化
+     * - 所有验证都在同步方法中进行，防止并发问题
+     * - 详细的日志输出便于调试和监控
+     * 
+     * @param senderId 发送者ID，必须是已注册的有效用户
+     * @param receiverId 接收者ID，必须是已注册的有效用户且不能是发送者本人
+     * @return 发送成功返回true，任何验证失败都返回false
      */
     public synchronized boolean sendFriendRequest(String senderId, String receiverId) {
         System.out.println("Attempting to send friend request from " + senderId + " to " + receiverId);

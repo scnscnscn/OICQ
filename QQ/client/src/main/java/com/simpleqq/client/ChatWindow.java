@@ -297,7 +297,22 @@ public class ChatWindow extends JFrame {
 
     /**
      * 处理接收到的消息
-     * 根据消息类型分发到相应的处理方法
+     * 这是客户端的核心消息处理中心，负责处理所有从服务器接收到的消息
+     * 
+     * 主要处理逻辑：
+     * 1. 消息分发：根据MessageType将消息路由到对应的处理方法
+     * 2. UI更新：确保界面元素在EDT线程中更新，保证线程安全
+     * 3. 窗口管理：自动打开、关闭或更新相关的聊天窗口
+     * 4. 状态同步：及时更新好友在线状态、群组成员等信息
+     * 
+     * 支持的消息类型：
+     * - TEXT_MESSAGE: 私聊文本消息，转发到对应的SingleChatWindow
+     * - GROUP_MESSAGE: 群聊消息，转发到对应的GroupChatWindow
+     * - IMAGE_MESSAGE: 图片消息，自动保存并在聊天窗口显示
+     * - FRIEND_LIST: 好友列表更新，刷新主界面的好友显示
+     * - GROUP相关: 群组信息更新，包括邀请、成员变化等
+     * - 系统消息: 操作结果反馈，通过对话框或状态栏显示
+     * 
      * @param message 接收到的消息对象
      */
     private void handleIncomingMessage(Message message) {
