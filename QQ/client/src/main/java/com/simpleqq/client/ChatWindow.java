@@ -122,16 +122,19 @@ public class ChatWindow extends JFrame {
         friendList = new JList<>(friendListModel);
         friendList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
-        // 好友列表选择事件：双击打开私聊窗口
-        friendList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                String selectedFriend = friendList.getSelectedValue();
-                    if (selectedFriend != null && !selectedFriend.trim().isEmpty()) {
-                    // 从显示文本中提取好友ID（格式：ID username (status)）
-                    String friendId = selectedFriend.split(" ")[0];
-                    openSingleChatWindow(friendId);
-                    // 打开后清除选择，确保关闭窗口后可以再次选择同一项触发打开
-                    friendList.clearSelection();
+        // 好友列表双击事件：双击打开私聊窗口
+        friendList.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = friendList.locationToIndex(e.getPoint());
+                    if (index >= 0) {
+                        String selectedFriend = friendListModel.getElementAt(index);
+                        if (selectedFriend != null && !selectedFriend.trim().isEmpty()) {
+                            String friendId = selectedFriend.split(" ")[0];
+                            openSingleChatWindow(friendId);
+                        }
+                    }
                 }
             }
         });
@@ -156,15 +159,19 @@ public class ChatWindow extends JFrame {
         groupList = new JList<>(groupListModel);
         groupList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
-        // 群组列表选择事件：双击打开群聊窗口
-        groupList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                String selectedGroup = groupList.getSelectedValue();
-                if (selectedGroup != null && !selectedGroup.trim().isEmpty()) {
-                    String groupId = selectedGroup.split(" ")[0];
-                    openGroupChatWindow(groupId);
-                    // 打开后清除选择，确保关闭窗口后可以再次选择同一项触发打开
-                    groupList.clearSelection();
+        // 群组列表双击事件：双击打开群聊窗口
+        groupList.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    int index = groupList.locationToIndex(e.getPoint());
+                    if (index >= 0) {
+                        String selectedGroup = groupListModel.getElementAt(index);
+                        if (selectedGroup != null && !selectedGroup.trim().isEmpty()) {
+                            String groupId = selectedGroup.split(" ")[0];
+                            openGroupChatWindow(groupId);
+                        }
+                    }
                 }
             }
         });
