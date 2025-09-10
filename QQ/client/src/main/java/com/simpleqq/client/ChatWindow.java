@@ -46,10 +46,6 @@ public class ChatWindow extends JFrame {
     private DefaultListModel<String> groupInviteListModel;  // 群组邀请列表模型
     private JList<String> groupInviteList;                  // 群组邀请列表
 
-    // 刷新按钮
-    private JButton refreshFriendsButton;                    // 刷新好友列表按钮
-    private JButton refreshGroupsButton;                     // 刷新群组列表按钮
-
     /**
      * 构造函数
      * @param client 客户端对象，用于网络通信
@@ -142,11 +138,7 @@ public class ChatWindow extends JFrame {
         friendsPanel.add(new JScrollPane(friendList), BorderLayout.CENTER);
         
         // 添加刷新好友列表按钮
-        refreshFriendsButton = new JButton("刷新好友");
-        refreshFriendsButton.addActionListener(e -> refreshFriendList());
-        friendsPanel.add(refreshFriendsButton, BorderLayout.SOUTH);
-        
-        tabbedPane.addTab("好友", friendsPanel);
+    tabbedPane.addTab("好友", friendsPanel);
     }
 
     /**
@@ -178,12 +170,7 @@ public class ChatWindow extends JFrame {
         
         groupsPanel.add(new JScrollPane(groupList), BorderLayout.CENTER);
         
-        // 添加刷新群组列表按钮
-        refreshGroupsButton = new JButton("刷新群聊");
-        refreshGroupsButton.addActionListener(e -> refreshGroupList());
-        groupsPanel.add(refreshGroupsButton, BorderLayout.SOUTH);
-        
-        tabbedPane.addTab("群聊", groupsPanel);
+    tabbedPane.addTab("群聊", groupsPanel);
     }
 
     /**

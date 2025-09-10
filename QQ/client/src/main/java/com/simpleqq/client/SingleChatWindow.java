@@ -38,7 +38,6 @@ public class SingleChatWindow extends JFrame {
     private JTextField messageField;          // 消息输入框
     private JButton sendButton;               // 发送文本消息按钮
     private JButton sendImageButton;          // 发送图片按钮
-    private JButton saveHistoryButton;        // 保存聊天记录按钮
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss"); // 时间格式化器
 
     /**
@@ -81,17 +80,14 @@ public class SingleChatWindow extends JFrame {
         messageField = new JTextField();
         sendButton = new JButton("发送");
         sendImageButton = new JButton("发送图片");
-        saveHistoryButton = new JButton("保存聊天记录");
+    // 创建按钮面板
+    JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
+    buttonPanel.add(sendButton);
+    buttonPanel.add(sendImageButton);
 
-        // 创建按钮面板
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 3));
-        buttonPanel.add(sendButton);
-        buttonPanel.add(sendImageButton);
-        buttonPanel.add(saveHistoryButton);
-
-        inputPanel.add(messageField, BorderLayout.CENTER);
-        inputPanel.add(buttonPanel, BorderLayout.EAST);
-        panel.add(inputPanel, BorderLayout.SOUTH);
+    inputPanel.add(messageField, BorderLayout.CENTER);
+    inputPanel.add(buttonPanel, BorderLayout.EAST);
+    panel.add(inputPanel, BorderLayout.SOUTH);
     }
 
     /**
@@ -99,10 +95,9 @@ public class SingleChatWindow extends JFrame {
      * 绑定按钮点击和键盘事件
      */
     private void setupEventHandlers() {
-        sendButton.addActionListener(e -> sendMessage());
-        messageField.addActionListener(e -> sendMessage()); // 回车键发送消息
-        sendImageButton.addActionListener(e -> sendImage());
-        saveHistoryButton.addActionListener(e -> saveChatHistory());
+    sendButton.addActionListener(e -> sendMessage());
+    messageField.addActionListener(e -> sendMessage()); // 回车键发送消息
+    sendImageButton.addActionListener(e -> sendImage());
     }
 
     /**
@@ -300,58 +295,7 @@ public class SingleChatWindow extends JFrame {
         return tryFile;
     }
 
-    // 查找或创建一个用于保存的 .history 目录（优先返回已存在的 server/.history 或 cwd/.history）
-    private File findHistoryDir() {
-        File cwd = new File(System.getProperty("user.dir"));
-        File tryDir = new File(cwd, ".history");
-        if (tryDir.exists() && tryDir.isDirectory()) return tryDir;
 
-        // 向上查找父目录的 .history 或 server/.history
-        File dir = cwd;
-        for (int i = 0; i < 10; i++) {
-            File candidate = new File(dir, ".history");
-            if (candidate.exists() && candidate.isDirectory()) return candidate;
-            File serverCandidate = new File(dir, "server/.history");
-            if (serverCandidate.exists() && serverCandidate.isDirectory()) return serverCandidate;
-            dir = dir.getParentFile();
-            if (dir == null) break;
-        }
-
-        // 都没找到则在 cwd 创建并返回
-        if (!tryDir.exists()) tryDir.mkdirs();
-        return tryDir;
-    }
-
-    /**
-     * 保存聊天记录
-     * 将当前聊天内容保存到用户指定的文件
-     */
-    private void saveChatHistory() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("保存聊天记录");
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        
-        // 设置默认文件名
-    String defaultFileName = "chat_history_" + client.getCurrentUser().getId() + "_" + friendId + ".txt";
-    // 将默认目录设置为运行目录下的 .history
-    File historyDir = new File(System.getProperty("user.dir"), ".history");
-    if (!historyDir.exists()) historyDir.mkdirs();
-    fileChooser.setCurrentDirectory(historyDir);
-    fileChooser.setSelectedFile(new File(historyDir, defaultFileName));
-
-        int userSelection = fileChooser.showSaveDialog(this);
-
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            File fileToSave = fileChooser.getSelectedFile();
-            try {
-                // 将聊天区域的所有文本保存到文件
-                Files.write(fileToSave.toPath(), chatArea.getText().getBytes());
-                JOptionPane.showMessageDialog(this, "聊天记录已保存到: " + fileToSave.getAbsolutePath());
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "保存聊天记录失败: " + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
 
     /**
      * 设置窗口关闭处理器
