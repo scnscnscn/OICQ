@@ -312,6 +312,7 @@ public class GroupChatWindow extends JFrame {
             return tryFile;
         }
 
+        // 向上查找父目录的 .history（最多3层）以及可能的 server/.history
         File dir = cwd;
         for (int i = 0; i < 3; i++) {
             dir = dir.getParentFile();
@@ -322,9 +323,28 @@ public class GroupChatWindow extends JFrame {
                 System.out.println("Found history at parent: " + parentFile.getAbsolutePath());
                 return parentFile;
             }
+            // 检查可能的 server/.history
+            File serverHistory = new File(dir, "server/.history");
+            File serverFile = new File(serverHistory, fileName);
+            if (serverFile.exists()) {
+                System.out.println("Found history at server: " + serverFile.getAbsolutePath());
+                return serverFile;
+            }
         }
 
-        // 如果都没找到，返回运行目录下的目标路径（但文件可能不存在）
+        // 再次从当前目录向上彻底查找 server/.history（直到根）
+        File cur = cwd;
+        while (cur != null) {
+            File serverHistory = new File(cur, "server/.history");
+            File serverFile = new File(serverHistory, fileName);
+            if (serverFile.exists()) {
+                System.out.println("Found history at ancestor server: " + serverFile.getAbsolutePath());
+                return serverFile;
+            }
+            cur = cur.getParentFile();
+        }
+
+        // 如果都没找到，确保当前运行目录下的 .history 存在并返回默认路径
         if (!tryDir.exists()) tryDir.mkdirs();
         System.out.println("No existing history found; will try: " + tryFile.getAbsolutePath());
         return tryFile;
