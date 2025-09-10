@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import com.simpleqq.common.Message;
 import com.simpleqq.common.MessageType;
@@ -62,6 +63,7 @@ public class SingleChatWindow extends JFrame {
     private void initializeUI() {
         setTitle("与 " + friendId + " 聊天 - " + client.getCurrentUser().getUsername());
         setSize(500, 400);
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel panel = new JPanel(new BorderLayout());
@@ -131,22 +133,25 @@ public class SingleChatWindow extends JFrame {
         
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            try {
-                // 读取图片文件并转换为Base64编码
-                byte[] imageBytes = Files.readAllBytes(selectedFile.toPath());
-                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                
-                // 创建图片消息，格式：文件名:Base64数据
-                String imageContent = selectedFile.getName() + ":" + base64Image;
-                Message message = new Message(MessageType.IMAGE_MESSAGE, client.getCurrentUser().getId(), friendId, imageContent);
-                client.sendMessage(message);
-                
-                // 立即在界面显示自己发送的图片消息（只显示文件名）
-                Message displayMessage = new Message(MessageType.IMAGE_MESSAGE, client.getCurrentUser().getId(), friendId, selectedFile.getName());
-                displayMessage(displayMessage);
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "发送图片失败: " + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
-            }
+            // 在后台线程中读取并编码大文件，避免阻塞 EDT
+            sendImageButton.setEnabled(false);
+            new Thread(() -> {
+                try {
+                    byte[] imageBytes = Files.readAllBytes(selectedFile.toPath());
+                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+
+                    String imageContent = selectedFile.getName() + ":" + base64Image;
+                    Message message = new Message(MessageType.IMAGE_MESSAGE, client.getCurrentUser().getId(), friendId, imageContent);
+                    client.sendMessage(message);
+
+                    Message displayMessage = new Message(MessageType.IMAGE_MESSAGE, client.getCurrentUser().getId(), friendId, selectedFile.getName());
+                    SwingUtilities.invokeLater(() -> displayMessage(displayMessage));
+                } catch (IOException ex) {
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this, "发送图片失败: " + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE));
+                } finally {
+                    SwingUtilities.invokeLater(() -> sendImageButton.setEnabled(true));
+                }
+            }).start();
         }
     }
 
@@ -168,27 +173,35 @@ public class SingleChatWindow extends JFrame {
                 // 包含图片数据的消息，提取文件名
                 String fileName = content.split(":", 2)[0];
                 displayContent = "[图片: " + fileName + "]";
-                
-                // 如果是接收到的图片消息，自动保存图片到本地
+
+                // 如果是接收到的图片消息，自动保存图片到本地（后台线程）
                 if (!message.getSenderId().equals(client.getCurrentUser().getId())) {
-                    try {
-                        String[] parts = content.split(":", 2);
-                        if (parts.length == 2) {
-                            String base64Image = parts[1];
-                            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-                            
-                            // 创建以发送者用户名命名的保存目录
-                            File saveDir = new File("received_images_from_" + message.getSenderId());
-                            saveDir.mkdirs();
-                            
-                            // 保存图片文件
-                            File outputFile = new File(saveDir, fileName);
-                            Files.write(outputFile.toPath(), imageBytes);
-                            
-                            displayContent += " (已保存到: " + outputFile.getAbsolutePath() + ")";
-                        }
-                    } catch (IOException ex) {
-                        displayContent += " (保存失败: " + ex.getMessage() + ")";
+                    String[] parts = content.split(":", 2);
+                    if (parts.length == 2) {
+                        String base64Image = parts[1];
+                        chatArea.append(time + " [" + senderName + "]: " + displayContent + "\n");
+                        chatArea.setCaretPosition(chatArea.getDocument().getLength());
+
+                        new Thread(() -> {
+                            try {
+                                byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+                                File saveDir = new File("received_images_from_" + message.getSenderId());
+                                saveDir.mkdirs();
+                                File outputFile = new File(saveDir, fileName);
+                                Files.write(outputFile.toPath(), imageBytes);
+                                String savedMsg = "(已保存到: " + outputFile.getAbsolutePath() + ")";
+                                SwingUtilities.invokeLater(() -> {
+                                    chatArea.append("    " + savedMsg + "\n");
+                                    chatArea.setCaretPosition(chatArea.getDocument().getLength());
+                                });
+                            } catch (IOException ex) {
+                                SwingUtilities.invokeLater(() -> {
+                                    chatArea.append("    (保存图片失败: " + ex.getMessage() + ")\n");
+                                    chatArea.setCaretPosition(chatArea.getDocument().getLength());
+                                });
+                            }
+                        }).start();
+                        return; // 已处理并返回
                     }
                 }
             } else {
@@ -210,24 +223,31 @@ public class SingleChatWindow extends JFrame {
      * 从本地文件读取之前的聊天记录并显示
      */
     private void loadChatHistory() {
-        String currentUserId = client.getCurrentUser().getId();
-        String fileName;
-        
-        // 确保聊天记录文件名的一致性，按字母顺序排列用户ID
-        if (currentUserId.compareTo(friendId) < 0) {
-            fileName = "chat_history_" + currentUserId + "_" + friendId + ".txt";
-        } else {
-            fileName = "chat_history_" + friendId + "_" + currentUserId + ".txt";
-        }
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                chatArea.append(line + "\n");
+        // 将历史记录的读取放到后台，避免在创建窗口时阻塞 EDT
+        new Thread(() -> {
+            String currentUserId = client.getCurrentUser().getId();
+            String fileName;
+            if (currentUserId.compareTo(friendId) < 0) {
+                fileName = "chat_history_" + currentUserId + "_" + friendId + ".txt";
+            } else {
+                fileName = "chat_history_" + friendId + "_" + currentUserId + ".txt";
             }
-        } catch (IOException e) {
-            System.err.println("No chat history found for " + friendId + ": " + e.getMessage());
-        }
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+                String content = sb.toString();
+                SwingUtilities.invokeLater(() -> {
+                    chatArea.append(content);
+                    chatArea.setCaretPosition(chatArea.getDocument().getLength());
+                });
+            } catch (IOException e) {
+                System.err.println("No chat history found for " + friendId + ": " + e.getMessage());
+            }
+        }).start();
     }
 
     /**

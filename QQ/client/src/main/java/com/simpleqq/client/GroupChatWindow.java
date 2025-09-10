@@ -27,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 
 import com.simpleqq.common.Message;
 import com.simpleqq.common.MessageType;
@@ -72,6 +73,7 @@ public class GroupChatWindow extends JFrame {
     private void initializeUI() {
         setTitle("群聊: " + groupId + " - " + client.getCurrentUser().getUsername());
         setSize(700, 500); // 增加窗口大小以容纳成员列表
+    setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -173,22 +175,26 @@ public class GroupChatWindow extends JFrame {
         
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFile = fileChooser.getSelectedFile();
-            try {
-                // 读取图片文件并转换为Base64编码
-                byte[] imageBytes = Files.readAllBytes(selectedFile.toPath());
-                String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-                
-                // 群聊中直接发送图片数据，不需要确认
-                String imageContent = selectedFile.getName() + ":" + base64Image;
-                Message message = new Message(MessageType.IMAGE_MESSAGE, client.getCurrentUser().getId(), groupId, imageContent);
-                client.sendMessage(message);
-                
-                // 立即显示自己发送的图片消息
-                Message displayMessage = new Message(MessageType.IMAGE_MESSAGE, client.getCurrentUser().getId(), groupId, selectedFile.getName());
-                displayMessage(displayMessage);
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, "发送图片失败: " + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE);
-            }
+            // 把读取大文件并编码的工作放到后台线程，避免阻塞 EDT
+            sendImageButton.setEnabled(false);
+            new Thread(() -> {
+                try {
+                    byte[] imageBytes = Files.readAllBytes(selectedFile.toPath());
+                    String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+
+                    String imageContent = selectedFile.getName() + ":" + base64Image;
+                    Message message = new Message(MessageType.IMAGE_MESSAGE, client.getCurrentUser().getId(), groupId, imageContent);
+                    client.sendMessage(message);
+
+                    // 在 EDT 上显示本地的文件名消息
+                    Message displayMessage = new Message(MessageType.IMAGE_MESSAGE, client.getCurrentUser().getId(), groupId, selectedFile.getName());
+                    SwingUtilities.invokeLater(() -> displayMessage(displayMessage));
+                } catch (IOException ex) {
+                    SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(this, "发送图片失败: " + ex.getMessage(), "错误", JOptionPane.ERROR_MESSAGE));
+                } finally {
+                    SwingUtilities.invokeLater(() -> sendImageButton.setEnabled(true));
+                }
+            }).start();
         }
     }
 
@@ -232,27 +238,36 @@ public class GroupChatWindow extends JFrame {
                 // 包含图片数据的消息，提取文件名
                 String fileName = content.split(":", 2)[0];
                 displayContent = "[图片: " + fileName + "]";
-                
-                // 如果是接收到的图片消息，自动保存图片
+
+                // 如果是接收到的图片消息，把解码与写文件放到后台线程
                 if (!message.getSenderId().equals(client.getCurrentUser().getId())) {
-                    try {
-                        String[] parts = content.split(":", 2);
-                        if (parts.length == 2) {
-                            String base64Image = parts[1];
-                            byte[] imageBytes = Base64.getDecoder().decode(base64Image);
-                            
-                            // 创建群组图片保存目录
-                            File saveDir = new File("received_images");
-                            saveDir.mkdirs();
-                            
-                            // 保存图片文件
-                            File outputFile = new File(saveDir, fileName);
-                            Files.write(outputFile.toPath(), imageBytes);
-                            
-                            displayContent += " (已保存到: " + outputFile.getAbsolutePath() + ")";
-                        }
-                    } catch (IOException ex) {
-                        displayContent += " (保存失败: " + ex.getMessage() + ")";
+                    String[] parts = content.split(":", 2);
+                    if (parts.length == 2) {
+                        String base64Image = parts[1];
+                        // 先在界面上快速显示基本信息
+                        chatArea.append(time + " [" + senderName + "]: " + displayContent + "\n");
+                        chatArea.setCaretPosition(chatArea.getDocument().getLength());
+
+                        new Thread(() -> {
+                            try {
+                                byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+                                File saveDir = new File("received_images");
+                                saveDir.mkdirs();
+                                File outputFile = new File(saveDir, fileName);
+                                Files.write(outputFile.toPath(), imageBytes);
+                                String savedMsg = "(已保存到: " + outputFile.getAbsolutePath() + ")";
+                                SwingUtilities.invokeLater(() -> {
+                                    chatArea.append("    " + savedMsg + "\n");
+                                    chatArea.setCaretPosition(chatArea.getDocument().getLength());
+                                });
+                            } catch (IOException ex) {
+                                SwingUtilities.invokeLater(() -> {
+                                    chatArea.append("    (保存图片失败: " + ex.getMessage() + ")\n");
+                                    chatArea.setCaretPosition(chatArea.getDocument().getLength());
+                                });
+                            }
+                        }).start();
+                        return; // 已经处理并返回，因为我们已在上面追加了内容
                     }
                 }
             } else {

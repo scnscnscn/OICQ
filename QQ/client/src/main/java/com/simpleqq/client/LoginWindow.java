@@ -127,12 +127,22 @@ public class LoginWindow extends JFrame {
                 User loggedInUser = new User(message.getReceiverId(), message.getContent(), "");
                 loggedInUser.setOnline(true);
                 client.setCurrentUser(loggedInUser);
-                
-                SwingUtilities.invokeLater(() -> {
-                    ChatWindow chatWindow = new ChatWindow(client);
-                    chatWindow.setVisible(true);
-                    this.dispose(); // 关闭登录窗口
-                });
+                // 使用 invokeAndWait 确保在返回前 ChatWindow 已在 EDT 上创建并注册消息监听器，避免丢失随后到达的初始数据
+                try {
+                    SwingUtilities.invokeAndWait(() -> {
+                        ChatWindow chatWindow = new ChatWindow(client);
+                        chatWindow.setVisible(true);
+                        this.dispose(); // 关闭登录窗口
+                    });
+                } catch (InterruptedException | java.lang.reflect.InvocationTargetException ex) {
+                    // 如果同步执行失败，退回到异步创建（较不理想但可用）
+                    ex.printStackTrace();
+                    SwingUtilities.invokeLater(() -> {
+                        ChatWindow chatWindow = new ChatWindow(client);
+                        chatWindow.setVisible(true);
+                        this.dispose();
+                    });
+                }
             } else if (message.getType() == MessageType.LOGIN_FAIL) {
                 // 登录失败，显示错误信息
                 SwingUtilities.invokeLater(() -> {

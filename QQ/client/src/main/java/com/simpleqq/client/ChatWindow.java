@@ -126,10 +126,12 @@ public class ChatWindow extends JFrame {
         friendList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 String selectedFriend = friendList.getSelectedValue();
-                if (selectedFriend != null && !selectedFriend.trim().isEmpty()) {
+                    if (selectedFriend != null && !selectedFriend.trim().isEmpty()) {
                     // 从显示文本中提取好友ID（格式：ID username (status)）
                     String friendId = selectedFriend.split(" ")[0];
                     openSingleChatWindow(friendId);
+                    // 打开后清除选择，确保关闭窗口后可以再次选择同一项触发打开
+                    friendList.clearSelection();
                 }
             }
         });
@@ -161,6 +163,8 @@ public class ChatWindow extends JFrame {
                 if (selectedGroup != null && !selectedGroup.trim().isEmpty()) {
                     String groupId = selectedGroup.split(" ")[0];
                     openGroupChatWindow(groupId);
+                    // 打开后清除选择，确保关闭窗口后可以再次选择同一项触发打开
+                    groupList.clearSelection();
                 }
             }
         });
@@ -300,7 +304,10 @@ public class ChatWindow extends JFrame {
         switch (message.getType()) {
             case FRIEND_LIST -> updateFriendList(message.getContent());
             case TEXT_MESSAGE, IMAGE_MESSAGE -> handleChatMessage(message);
-            case GROUP_MESSAGE -> openGroupChatWindow(message.getReceiverId()).displayMessage(message);
+            case GROUP_MESSAGE -> {
+                GroupChatWindow gw = openGroupChatWindow(message.getReceiverId());
+                if (gw != null) gw.displayMessage(message);
+            }
             case ADD_FRIEND_SUCCESS -> {
                 JOptionPane.showMessageDialog(this, "添加好友成功: " + message.getContent());
                 refreshFriendList();
@@ -347,11 +354,11 @@ public class ChatWindow extends JFrame {
         String currentUserId = client.getCurrentUser().getId();
 
         if (receiver.equals(currentUserId)) {
-            // 接收到的消息，打开与发送者的聊天窗口
-            openSingleChatWindow(sender).displayMessage(message);
+            SingleChatWindow sw = openSingleChatWindow(sender);
+            if (sw != null) sw.displayMessage(message);
         } else if (sender.equals(currentUserId)) {
-            // 自己发送的消息，打开与接收者的聊天窗口
-            openSingleChatWindow(receiver).displayMessage(message);
+            SingleChatWindow sw = openSingleChatWindow(receiver);
+            if (sw != null) sw.displayMessage(message);
         }
     }
 
@@ -503,7 +510,7 @@ public class ChatWindow extends JFrame {
             // 设置窗口关闭监听器，窗口关闭时从管理器中移除
             chatWindow.addWindowListener(new WindowAdapter() {
                 @Override
-                public void windowClosed(WindowEvent e) {
+                public void windowClosing(WindowEvent e) {
                     singleChatWindows.remove(friendId);
                 }
             });
@@ -549,7 +556,7 @@ public class ChatWindow extends JFrame {
             // 设置窗口关闭监听器，窗口关闭时从管理器中移除
             chatWindow.addWindowListener(new WindowAdapter() {
                 @Override
-                public void windowClosed(WindowEvent e) {
+                public void windowClosing(WindowEvent e) {
                     groupChatWindows.remove(groupId);
                 }
             });
