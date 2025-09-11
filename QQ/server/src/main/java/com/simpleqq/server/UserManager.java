@@ -19,24 +19,42 @@ import com.simpleqq.common.User;
  * 使用文件系统进行数据持久化存储
  */
 public class UserManager {
-    private static final String USERS_FILE = "users.txt";                    // 用户信息文件
-    private static final String FRIENDSHIPS_FILE = "friendships.txt";        // 好友关系文件
-    private static final String FRIEND_REQUESTS_FILE = "friend_requests.txt"; // 好友请求文件
+    private final String usersFile;                    // 用户信息文件
+    private final String friendshipsFile;        // 好友关系文件
+    private final String friendRequestsFile; // 好友请求文件
 
     private final Map<String, User> users;                           // 用户信息映射表，key为用户ID
     private final Map<String, List<String>> friendships;            // 好友关系映射表，key为用户ID，value为好友ID列表
     private final Map<String, List<String>> pendingFriendRequests;  // 待处理好友请求，key为接收者ID，value为发送者ID列表
 
     /**
-     * 构造函数
-     * 初始化数据结构并从文件加载数据
+     * 默认构造函数，使用当前工作目录作为数据文件目录
      */
     public UserManager() {
+        this(".");
+    }
+
+    /**
+     * 构造函数（可指定 basePath）
+     * 初始化数据结构并从 basePath 下的文件加载数据。测试可传入临时目录以隔离文件状态。
+     */
+    public UserManager(String basePath) {
+        if (basePath.endsWith("/") || basePath.endsWith("\\")) {
+            this.usersFile = basePath + "users.txt";
+            this.friendshipsFile = basePath + "friendships.txt";
+            this.friendRequestsFile = basePath + "friend_requests.txt";
+        } else {
+            String sep = System.getProperty("file.separator");
+            this.usersFile = basePath + sep + "users.txt";
+            this.friendshipsFile = basePath + sep + "friendships.txt";
+            this.friendRequestsFile = basePath + sep + "friend_requests.txt";
+        }
+
         users = new ConcurrentHashMap<>();
         friendships = new ConcurrentHashMap<>();
         pendingFriendRequests = new ConcurrentHashMap<>();
-        
-        // 从文件加载数据
+
+        // 从文件加载数据（如果存在）
         loadUsers();
         loadFriendships();
         loadFriendRequests();
@@ -48,7 +66,7 @@ public class UserManager {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     private void loadUsers() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(usersFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
@@ -71,7 +89,7 @@ public class UserManager {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     private void saveUsers() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(USERS_FILE))) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(usersFile))) {
             for (User user : users.values()) {
                 writer.write(user.getId() + "|" + user.getUsername() + "|" + user.getPassword());
                 writer.newLine();
@@ -88,7 +106,7 @@ public class UserManager {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     private void loadFriendships() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FRIENDSHIPS_FILE))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(friendshipsFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
@@ -115,7 +133,7 @@ public class UserManager {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     private void saveFriendships() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FRIENDSHIPS_FILE))) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(friendshipsFile))) {
             for (Map.Entry<String, List<String>> entry : friendships.entrySet()) {
                 String userId1 = entry.getKey();
                 for (String userId2 : entry.getValue()) {
@@ -139,7 +157,7 @@ public class UserManager {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     private void loadFriendRequests() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(FRIEND_REQUESTS_FILE))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(friendRequestsFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
@@ -161,7 +179,7 @@ public class UserManager {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     private void saveFriendRequests() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FRIEND_REQUESTS_FILE))) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(friendRequestsFile))) {
             for (Map.Entry<String, List<String>> entry : pendingFriendRequests.entrySet()) {
                 String receiverId = entry.getKey();
                 for (String senderId : entry.getValue()) {

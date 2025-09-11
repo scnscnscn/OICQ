@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
  * 使用文件系统进行数据持久化存储
  */
 public class GroupManager {
-    private static final String GROUPS_FILE = "groups.txt";              // 群组信息文件
-    private static final String GROUP_INVITES_FILE = "group_invites.txt"; // 群组邀请文件
+    private final String groupsFile;              // 群组信息文件
+    private final String groupInvitesFile; // 群组邀请文件
 
     private final Map<String, List<String>> groups;              // 群组映射表，key为群组ID，value为成员ID列表
     private final Map<String, List<String>> pendingGroupInvites; // 待处理群组邀请，key为被邀请者ID，value为群组ID列表
@@ -29,6 +29,22 @@ public class GroupManager {
      * 初始化数据结构并从文件加载数据
      */
     public GroupManager() {
+        this(".");
+    }
+
+    /**
+     * Construct GroupManager reading/writing files under provided basePath
+     */
+    public GroupManager(String basePath) {
+        String sep = System.getProperty("file.separator");
+        if (basePath.endsWith("/") || basePath.endsWith("\\")) {
+            this.groupsFile = basePath + "groups.txt";
+            this.groupInvitesFile = basePath + "group_invites.txt";
+        } else {
+            this.groupsFile = basePath + sep + "groups.txt";
+            this.groupInvitesFile = basePath + sep + "group_invites.txt";
+        }
+
         groups = new ConcurrentHashMap<>();
         pendingGroupInvites = new ConcurrentHashMap<>();
         loadGroups();
@@ -41,7 +57,7 @@ public class GroupManager {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     private void loadGroups() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(GROUPS_FILE))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(groupsFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
@@ -69,7 +85,7 @@ public class GroupManager {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     private void saveGroups() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(GROUPS_FILE))) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(groupsFile))) {
             for (Map.Entry<String, List<String>> entry : groups.entrySet()) {
                 StringBuilder sb = new StringBuilder(entry.getKey());
                 for (String memberId : entry.getValue()) {
@@ -90,7 +106,7 @@ public class GroupManager {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     private void loadGroupInvites() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(GROUP_INVITES_FILE))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(groupInvitesFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
@@ -113,7 +129,7 @@ public class GroupManager {
      */
     @SuppressWarnings("CallToPrintStackTrace")
     private void saveGroupInvites() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(GROUP_INVITES_FILE))) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(groupInvitesFile))) {
             for (Map.Entry<String, List<String>> entry : pendingGroupInvites.entrySet()) {
                 String invitedId = entry.getKey();
                 for (String groupId : entry.getValue()) {
