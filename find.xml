@@ -1,5 +1,8 @@
 <application>
   <component name="FindSettings">
+    <option name="customScope" value="文件 '…\QQ\client\src\main\java\com\simpleqq\client\ChatWindow.java'" />
+    <option name="defaultScopeName" value="文件 '…\QQ\client\src\main\java\com\simpleqq\client\ChatWindow.java'" />
+    <option name="SEARCH_SCOPE" value="文件 '…\QQ\client\src\main\java\com\simpleqq\client\ChatWindow.java'" />
     <mask>*.css</mask>
     <mask>*.html</mask>
     <mask>*.xml</mask>
