@@ -1,9 +1,15 @@
 <application>
   <component name="CosySettings">
+    <option name="chatModeSelected">
+      <map>
+        <entry key="D:/杂碎/OICQ-main" value="agent" />
+      </map>
+    </option>
     <option name="chatModelSelected">
       <map>
         <entry key="$USER_HOME$/Desktop/OICQ/project/SimpleQQ_Maven-master/simpleQQchat-chat" value="default" />
         <entry key="D:/javawd/project-chat" value="dashscope_qwen3_coder_default" />
+        <entry key="D:/杂碎/OICQ-main-assistant" value="dashscope_qwen3_coder_default" />
       </map>
     </option>
     <option name="parameter">
@@ -130,6 +136,116 @@
                       <option name="statLine" value="1" />
                       <option name="text" value="UserManager.java" />
                       <option name="type" value="context" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="用语言的方式指出整个项目可能出错的信息并给出相应的处理，不要源码&#10;" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="folder" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="folders" />
+                          <option name="id" value="ac6256dc-5de4-49c8-980c-6a40d776985f" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#folder" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\杂碎\OICQ-main" />
+                      <option name="name" value="OICQ-main" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="text" value="OICQ-main" />
+                      <option name="type" value="folder" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="如何进行程序运行测试和分析？需要全部测试吗？有不需要测试的部分吗？" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="folder" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="folders" />
+                          <option name="id" value="ac6256dc-5de4-49c8-980c-6a40d776985f" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#folder" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\杂碎\OICQ-main" />
+                      <option name="name" value="OICQ-main" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="text" value="OICQ-main" />
+                      <option name="type" value="folder" />
                     </ChatContextTag>
                   </list>
                 </option>
