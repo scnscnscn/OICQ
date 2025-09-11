@@ -38,6 +38,17 @@ public class Server {
     }
 
     /**
+     * 构造函数（用于测试）
+     * 初始化服务器组件和数据结构，使用指定的基础路径存储数据文件
+     * @param basePath 数据文件存储的基础路径
+     */
+    public Server(String basePath) {
+        userManager = new UserManager(basePath);
+        groupManager = new GroupManager(basePath);
+        onlineClients = new ConcurrentHashMap<>(); // 使用线程安全的Map
+    }
+
+    /**
      * 获取用户管理器
      * @return 用户管理器实例
      */
