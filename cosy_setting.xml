@@ -250,6 +250,171 @@
                   </list>
                 </option>
               </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="target里面的site里面的index点进去的显示的测试覆盖率在哪里" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="folder" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="folders" />
+                          <option name="id" value="ac6256dc-5de4-49c8-980c-6a40d776985f" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#folder" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\杂碎\OICQ-main" />
+                      <option name="name" value="OICQ-main" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="text" value="OICQ-main" />
+                      <option name="type" value="folder" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="PS D:\杂碎\OICQ-main&gt; cd QQ &amp;&amp; mvn clean compile&#10;所在位置 行:1 字符: 7&#10;+ cd QQ &amp;&amp; mvn clean compile&#10;+       ~~&#10;标记“&amp;&amp;”不是此版本中的有效语句分隔符。&#10;    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException&#10;    + FullyQualifiedErrorId : InvalidEndOfLine&#10;这是什么问题" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="folder" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="folders" />
+                          <option name="id" value="ac6256dc-5de4-49c8-980c-6a40d776985f" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#folder" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\杂碎\OICQ-main" />
+                      <option name="name" value="OICQ-main" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="text" value="OICQ-main" />
+                      <option name="type" value="folder" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="我要在终端中输入命令了解测试覆盖率" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="folder" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="folders" />
+                          <option name="id" value="ac6256dc-5de4-49c8-980c-6a40d776985f" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#folder" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\杂碎\OICQ-main" />
+                      <option name="name" value="OICQ-main" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="text" value="OICQ-main" />
+                      <option name="type" value="folder" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
             </list>
           </value>
         </entry>
