@@ -9,6 +9,7 @@
       <map>
         <entry key="$USER_HOME$/Desktop/OICQ/project/SimpleQQ_Maven-master/simpleQQchat-chat" value="default" />
         <entry key="D:/javawd/project-chat" value="dashscope_qwen3_coder_default" />
+        <entry key="D:/新建文件夹/OICQ-main-chat" value="dashscope_qwen3_coder_default" />
         <entry key="D:/杂碎/OICQ-main-assistant" value="dashscope_qwen3_coder_default" />
       </map>
     </option>
@@ -891,6 +892,143 @@
                         <Object />
                       </option>
                       <option name="text" value="common" />
+                      <option name="type" value="folder" />
+                    </ChatContextTag>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="folder" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="folders" />
+                          <option name="id" value="ac6256dc-5de4-49c8-980c-6a40d776985f" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#folder" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\新建文件夹\OICQ-main\QQ\server" />
+                      <option name="name" value="server" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="text" value="server" />
+                      <option name="type" value="folder" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="通读所选项目代码，整理Date;Map;ConcurrentHashMap;这三个类型，要求如下：逻辑结构设计：需要用哪些数据  什么用途。物理结构设计：在逻辑结构设计的基础上，设计出每个数据的类型 &#10;如需数据库，要设计好数据库的每个字段  类型。细化逻辑结构设计中涉及到的数据模型，对每张表进行详细地设计，包括对字段名称、字段类型和主键等信息进行规范的设计。" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="folder" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="folders" />
+                          <option name="id" value="ac6256dc-5de4-49c8-980c-6a40d776985f" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#folder" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\新建文件夹\OICQ-main\QQ\common" />
+                      <option name="name" value="common" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="text" value="common" />
+                      <option name="type" value="folder" />
+                    </ChatContextTag>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="folder" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="folders" />
+                          <option name="id" value="ac6256dc-5de4-49c8-980c-6a40d776985f" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#folder" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\新建文件夹\OICQ-main\QQ\client" />
+                      <option name="name" value="client" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="text" value="client" />
                       <option name="type" value="folder" />
                     </ChatContextTag>
                     <ChatContextTag>
