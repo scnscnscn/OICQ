@@ -85,21 +85,6 @@ public class ChatWindow extends JFrame {
 
         leftPanel.add(tabbedPane, BorderLayout.CENTER);
 
-        // 创建功能按钮面板
-        JPanel buttonPanel = new JPanel(new GridLayout(3, 1));
-        JButton addFriendButton = new JButton("添加好友");
-        JButton deleteFriendButton = new JButton("删除好友");
-        JButton createGroupButton = new JButton("创建群聊");
-
-        addFriendButton.addActionListener(e -> addFriend());
-        deleteFriendButton.addActionListener(e -> deleteFriend());
-        createGroupButton.addActionListener(e -> createGroup());
-
-        buttonPanel.add(addFriendButton);
-        buttonPanel.add(deleteFriendButton);
-        buttonPanel.add(createGroupButton);
-        leftPanel.add(buttonPanel, BorderLayout.SOUTH);
-
         mainPanel.add(leftPanel, BorderLayout.WEST);
 
         // 创建右侧占位面板
@@ -137,8 +122,19 @@ public class ChatWindow extends JFrame {
         
         friendsPanel.add(new JScrollPane(friendList), BorderLayout.CENTER);
         
-        // 添加刷新好友列表按钮
-    tabbedPane.addTab("好友", friendsPanel);
+        // 创建功能按钮面板
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1));
+        JButton addFriendButton = new JButton("添加好友");
+        JButton deleteFriendButton = new JButton("删除好友");
+
+        addFriendButton.addActionListener(e -> addFriend());
+        deleteFriendButton.addActionListener(e -> deleteFriend());
+
+        buttonPanel.add(addFriendButton);
+        buttonPanel.add(deleteFriendButton);
+        friendsPanel.add(buttonPanel, BorderLayout.SOUTH);
+        
+        tabbedPane.addTab("好友", friendsPanel);
     }
 
     /**
@@ -170,6 +166,15 @@ public class ChatWindow extends JFrame {
         
         groupsPanel.add(new JScrollPane(groupList), BorderLayout.CENTER);
         
+        // 创建功能按钮面板
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 1));
+        JButton createGroupButton = new JButton("创建群聊");
+
+        createGroupButton.addActionListener(e -> createGroup());
+
+        buttonPanel.add(createGroupButton);
+        groupsPanel.add(buttonPanel, BorderLayout.SOUTH);
+        
     tabbedPane.addTab("群聊", groupsPanel);
     }
 
@@ -196,21 +201,15 @@ public class ChatWindow extends JFrame {
         requestPanel.add(requestTabbedPane, BorderLayout.CENTER);
 
         // 请求处理按钮面板
-        JPanel requestButtonPanel = new JPanel(new GridLayout(2, 2));
-        JButton acceptFriendRequestButton = new JButton("接受好友");
-        JButton rejectFriendRequestButton = new JButton("拒绝好友");
-        JButton acceptGroupInviteButton = new JButton("接受群聊");
-        JButton rejectGroupInviteButton = new JButton("拒绝群聊");
+        JPanel requestButtonPanel = new JPanel(new GridLayout(1, 2));
+        JButton acceptRequestButton = new JButton("同意请求");
+        JButton rejectRequestButton = new JButton("拒绝请求");
 
-        acceptFriendRequestButton.addActionListener(e -> handleFriendRequestAction(true));
-        rejectFriendRequestButton.addActionListener(e -> handleFriendRequestAction(false));
-        acceptGroupInviteButton.addActionListener(e -> handleGroupInviteAction(true));
-        rejectGroupInviteButton.addActionListener(e -> handleGroupInviteAction(false));
+        acceptRequestButton.addActionListener(e -> handleRequestAction(true));
+        rejectRequestButton.addActionListener(e -> handleRequestAction(false));
 
-        requestButtonPanel.add(acceptFriendRequestButton);
-        requestButtonPanel.add(rejectFriendRequestButton);
-        requestButtonPanel.add(acceptGroupInviteButton);
-        requestButtonPanel.add(rejectGroupInviteButton);
+        requestButtonPanel.add(acceptRequestButton);
+        requestButtonPanel.add(rejectRequestButton);
         requestPanel.add(requestButtonPanel, BorderLayout.SOUTH);
 
         tabbedPane.addTab("请求", requestPanel);
@@ -581,9 +580,9 @@ public class ChatWindow extends JFrame {
      * 处理好友请求操作
      * 接受或拒绝选中的好友请求
      * @param accept true表示接受，false表示拒绝
+     * @param selectedRequest 选中的好友请求
      */
-    private void handleFriendRequestAction(boolean accept) {
-        String selectedRequest = friendRequestList.getSelectedValue();
+    private void handleFriendRequestAction(boolean accept, String selectedRequest) {
         if (selectedRequest != null) {
             String senderId = selectedRequest;
             if (accept) {
@@ -602,9 +601,9 @@ public class ChatWindow extends JFrame {
      * 处理群组邀请操作
      * 接受或拒绝选中的群组邀请
      * @param accept true表示接受，false表示拒绝
+     * @param selectedInvite 选中的群组邀请
      */
-    private void handleGroupInviteAction(boolean accept) {
-        String selectedInvite = groupInviteList.getSelectedValue();
+    private void handleGroupInviteAction(boolean accept, String selectedInvite) {
         if (selectedInvite != null) {
             // 从显示文本中提取群组ID和邀请者ID
             String groupId = selectedInvite.split(" \\(")[0];
@@ -619,6 +618,29 @@ public class ChatWindow extends JFrame {
             groupInviteListModel.removeElement(selectedInvite);
         } else {
             JOptionPane.showMessageDialog(this, "请选择一个群聊邀请。");
+        }
+    }
+
+    /**
+     * 处理请求操作
+     * 接受或拒绝选中的请求（好友请求或群组邀请）
+     * @param accept true表示接受，false表示拒绝
+     */
+    private void handleRequestAction(boolean accept) {
+        String selectedFriendRequest = friendRequestList.getSelectedValue();
+        String selectedGroupInvite = groupInviteList.getSelectedValue();
+
+        if (selectedFriendRequest != null && selectedGroupInvite != null) {
+            JOptionPane.showMessageDialog(this, "请只选择一个请求进行处理。");
+            return;
+        }
+
+        if (selectedFriendRequest != null) {
+            handleFriendRequestAction(accept, selectedFriendRequest);
+        } else if (selectedGroupInvite != null) {
+            handleGroupInviteAction(accept, selectedGroupInvite);
+        } else {
+            JOptionPane.showMessageDialog(this, "请选择一个请求。");
         }
     }
 
