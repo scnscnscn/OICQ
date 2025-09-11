@@ -415,6 +415,226 @@
                   </list>
                 </option>
               </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="如何在终端输入命令获悉测试覆盖率" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="folder" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="folders" />
+                          <option name="id" value="ac6256dc-5de4-49c8-980c-6a40d776985f" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#folder" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\新建文件夹\OICQ-main" />
+                      <option name="name" value="OICQ-main" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="text" value="OICQ-main" />
+                      <option name="type" value="folder" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="如何在终端中输入命令查看覆盖率" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="folder" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="folders" />
+                          <option name="id" value="ac6256dc-5de4-49c8-980c-6a40d776985f" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#folder" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\新建文件夹\OICQ-main" />
+                      <option name="name" value="OICQ-main" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="text" value="OICQ-main" />
+                      <option name="type" value="folder" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="通读整个项目，请帮我整理Date;&#10;Map;&#10;ConcurrentHashMap;这些数据类型，" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="folder" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="folders" />
+                          <option name="id" value="ac6256dc-5de4-49c8-980c-6a40d776985f" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#folder" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\新建文件夹\OICQ-main" />
+                      <option name="name" value="OICQ-main" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="text" value="OICQ-main" />
+                      <option name="type" value="folder" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
+              <ChatRecentQuery>
+                <option name="chatInputElements">
+                  <list>
+                    <ChatInputElement>
+                      <option name="text" value="PS D:\新建文件夹\OICQ-main&gt; mvn clean compile&#10;mvn : 无法将“mvn”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确保路径正确，然后再试一次。&#10;所在位置 行:1 字符: 1&#10;+ mvn clean compile&#10;+ ~~~&#10;    + CategoryInfo          : ObjectNotFound: (mvn:String) [], CommandNotFoundException&#10;    + FullyQualifiedErrorId : CommandNotFoundException&#10;" />
+                      <option name="type" value="text" />
+                    </ChatInputElement>
+                  </list>
+                </option>
+                <option name="contextTags">
+                  <list>
+                    <ChatContextTag>
+                      <option name="componentType" value="comboBox" />
+                      <option name="contextProvider">
+                        <SuggestPrompt>
+                          <option name="componentType" value="comboBox" />
+                          <option name="contextName" value="folder" />
+                          <option name="drillDownEnable" value="true" />
+                          <option name="enabled" value="true" />
+                          <option name="extra">
+                            <map>
+                              <entry key="contextType">
+                                <value>
+                                  <Object />
+                                </value>
+                              </entry>
+                            </map>
+                          </option>
+                          <option name="hint" value="folders" />
+                          <option name="id" value="ac6256dc-5de4-49c8-980c-6a40d776985f" />
+                          <option name="sourceType" value="system" />
+                          <option name="text" value="#folder" />
+                          <option name="type" value="context" />
+                        </SuggestPrompt>
+                      </option>
+                      <option name="extra">
+                        <map>
+                          <entry key="contextType">
+                            <value>
+                              <Object />
+                            </value>
+                          </entry>
+                        </map>
+                      </option>
+                      <option name="id" value="D:\新建文件夹\OICQ-main" />
+                      <option name="name" value="OICQ-main" />
+                      <option name="payload">
+                        <Object />
+                      </option>
+                      <option name="text" value="OICQ-main" />
+                      <option name="type" value="folder" />
+                    </ChatContextTag>
+                  </list>
+                </option>
+              </ChatRecentQuery>
             </list>
           </value>
         </entry>
